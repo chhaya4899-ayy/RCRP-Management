@@ -33,7 +33,7 @@ module.exports = {
           { name: '👥 Server Count', value: `${member.guild.memberCount} members`, inline: true },
           { name: '🏷️ Roles',       value: member.roles.cache.size > 1 ? member.roles.cache.map(r => r.name).filter(n => n !== '@everyone').join(', ').slice(0, 300) : 'None', inline: false },
         )
-        .setFooter({ text: `RCRP Join Logger — ${isStaff ? 'Staff join flagged' : 'Standard join'}` })
+        .setFooter({ text: `FSRP Join Logger — ${isStaff ? 'Staff join flagged' : 'Standard join'}` })
         .setTimestamp();
 
       await logCh.send({ embeds: [embed] });

@@ -48,7 +48,7 @@ async function refreshCalendar(loaStore, shiftSessions, activeShifts, guild) {
     .setColor(config.colors.primary)
     .setTitle(`📅  Staff Duty Calendar — Week of ${week}`)
     .setDescription('Live overview of staff availability and activity this week.')
-    .setFooter({ text: 'RCRP Staff Calendar — Auto-refreshes every 30 minutes' })
+    .setFooter({ text: 'FSRP Staff Calendar — Auto-refreshes every 30 minutes' })
     .setTimestamp();
 
   if (onDutyLines.length) {

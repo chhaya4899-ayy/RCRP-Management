@@ -45,7 +45,7 @@ async function broadcast(interaction, type, title, message, targetChannel) {
   const embed = new EmbedBuilder()
     .setColor(cfg.color)
     .setAuthor({
-      name: `${cfg.emoji}  ${cfg.label}  —  River City Role Play`,
+      name: `${cfg.emoji}  ${cfg.label}  —  Florida State Roleplay`,
       iconURL: guild.iconURL({ dynamic: true }) || undefined,
     })
     .setTitle(title)
@@ -55,7 +55,7 @@ async function broadcast(interaction, type, title, message, targetChannel) {
       { name: '🕐 Posted At',    value: `<t:${Math.floor(Date.now()/1000)}:F>`,   inline: true },
     )
     .setThumbnail(guild.iconURL({ dynamic: true }) || null)
-    .setFooter({ text: `RCRP Broadcast System — ${cfg.label}` })
+    .setFooter({ text: `FSRP Broadcast System — ${cfg.label}` })
     .setTimestamp();
 
   // Add image if message contains a URL that looks like an image
@@ -70,7 +70,7 @@ async function broadcast(interaction, type, title, message, targetChannel) {
           .setColor(0x2D7D46)
           .setTitle('✅  Broadcast Sent')
           .setDescription(`Your **${cfg.label}** was posted to ${ch}.`)
-          .setFooter({ text: 'RCRP Broadcast System' })
+          .setFooter({ text: 'FSRP Broadcast System' })
           .setTimestamp()
       ]
     });
@@ -90,7 +90,7 @@ async function broadcast(interaction, type, title, message, targetChannel) {
               { name: 'Title',   value: title,               inline: false },
               { name: 'Message', value: message.slice(0, 400), inline: false },
             )
-            .setFooter({ text: 'RCRP Broadcast Logger' })
+            .setFooter({ text: 'FSRP Broadcast Logger' })
             .setTimestamp()
         ]
       }).catch(() => {});

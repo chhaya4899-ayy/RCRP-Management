@@ -1,12 +1,12 @@
-// embeds.js — RCRP Visual Embed Templates (UPGRADED — RCRP STYLE)
+// embeds.js — FSRP Visual Embed Templates (UPGRADED — FSRP STYLE)
 'use strict';
 
 const { EmbedBuilder } = require('discord.js');
 const config = require('../config');
 
-const BRAND  = 'River City Role Play';
-const FOOTER = { text: `RCRP Management — ${BRAND}` };
-const MDT_FOOTER = { text: `RCRP MDT — ${BRAND} Dispatch Center` };
+const BRAND  = 'Florida State Roleplay';
+const FOOTER = { text: `FSRP Management — ${BRAND}` };
+const MDT_FOOTER = { text: `FSRP MDT — ${BRAND} Dispatch Center` };
 
 // ── Base builders ─────────────────────────────────────────────────────────────
 function base(color = config.colors.primary) {
@@ -46,7 +46,7 @@ function mdtEmergency(call, aiRec, callerName) {
   const team   = (call.Team || 'ALL UNITS').toUpperCase();
   return new EmbedBuilder()
     .setColor(0xED4245)
-    .setAuthor({ name: `🚨  EMERGENCY DISPATCH  —  RCRP MDT` })
+    .setAuthor({ name: `🚨  EMERGENCY DISPATCH  —  FSRP MDT` })
     .setTitle(`${emoji}  CALL #${call.CallNumber || '?'}  ⟶  ${team} NEEDED`)
     .setDescription(
       `> ${aiRec || 'All available units respond. Follow standard protocol.'}\n\n` +
@@ -66,7 +66,7 @@ function mdtEmergency(call, aiRec, callerName) {
 function mdtDispatch(callData, aiRec) {
   return new EmbedBuilder()
     .setColor(0xFF6B00)
-    .setAuthor({ name: `🛑  MOD CALL  —  RCRP MDT  —  STAFF REQUIRED` })
+    .setAuthor({ name: `🛑  MOD CALL  —  FSRP MDT  —  STAFF REQUIRED` })
     .setTitle(`📣  In-Game Staff Call  —  Action Required`)
     .setDescription(
       `> ${aiRec || 'Respond to this mod call as soon as possible.'}\n\n` +
@@ -94,11 +94,11 @@ function shiftCard(member, user, player, durationMins, modCalls, online, lastTea
   const starBar  = stars > 0 ? '⭐'.repeat(stars) : 'Clean';
   return new EmbedBuilder()
     .setColor(online ? 0x2D7D46 : 0x3D4045)
-    .setAuthor({ name: online ? `🟢  ON DUTY  —  RCRP SHIFT TRACKER` : `⚫  OFF DUTY  —  RCRP SHIFT TRACKER`, iconURL: member.user.displayAvatarURL() })
+    .setAuthor({ name: online ? `🟢  ON DUTY  —  FSRP SHIFT TRACKER` : `⚫  OFF DUTY  —  FSRP SHIFT TRACKER`, iconURL: member.user.displayAvatarURL() })
     .setTitle(member.displayName)
     .setThumbnail(member.user.displayAvatarURL())
     .setDescription(online
-      ? `> Currently active in-game on River City Role Play.\n> Session is being tracked live.`
+      ? `> Currently active in-game on Florida State Roleplay.\n> Session is being tracked live.`
       : `> This staff member is currently off duty.`
     )
     .addFields(
@@ -111,7 +111,7 @@ function shiftCard(member, user, player, durationMins, modCalls, online, lastTea
       { name: '📍 Location',    value: postal,                      inline: true },
       { name: '⭐ Wanted',      value: starBar,                     inline: true },
     )
-    .setFooter({ text: `RCRP Shift Tracker — ${BRAND}` })
+    .setFooter({ text: `FSRP Shift Tracker — ${BRAND}` })
     .setTimestamp();
 }
 
@@ -123,7 +123,7 @@ function profileCard(member, dbUser, stats, guild) {
     .first();
   return new EmbedBuilder()
     .setColor(topRole?.color || config.colors.primary)
-    .setAuthor({ name: `👤  RCRP STAFF PROFILE  —  ${BRAND}`, iconURL: member.user.displayAvatarURL() })
+    .setAuthor({ name: `👤  FSRP STAFF PROFILE  —  ${BRAND}`, iconURL: member.user.displayAvatarURL() })
     .setTitle(member.displayName)
     .setThumbnail(member.user.displayAvatarURL())
     .setDescription(`> ${topRole ? topRole.name : 'Community Member'} · ${BRAND}`)
@@ -137,7 +137,7 @@ function profileCard(member, dbUser, stats, guild) {
       { name: '📅 Joined',       value: `<t:${Math.floor(member.joinedTimestamp/1000)}:R>`, inline: true },
       { name: '🔗 Discord',      value: `${member} (${member.user.tag})`,           inline: true },
     )
-    .setFooter({ text: `RCRP Profile System — ${BRAND}` })
+    .setFooter({ text: `FSRP Profile System — ${BRAND}` })
     .setTimestamp();
 }
 
@@ -145,7 +145,7 @@ function profileCard(member, dbUser, stats, guild) {
 function reviewPanel(memberName, periodLabel) {
   return new EmbedBuilder()
     .setColor(0x8B7536)
-    .setAuthor({ name: `⭐  RCRP STAFF REVIEW  —  ${BRAND}` })
+    .setAuthor({ name: `⭐  FSRP STAFF REVIEW  —  ${BRAND}` })
     .setTitle(`📝  Staff Review — ${periodLabel}`)
     .setDescription(
       `> Share your honest experience with **${memberName}** during this period.\n\n` +
@@ -153,7 +153,7 @@ function reviewPanel(memberName, periodLabel) {
       `Please be respectful and constructive.`
     )
     .addFields({ name: '📌 Why it matters', value: 'Peer reviews drive promotions, recognition, and team improvement.', inline: false })
-    .setFooter({ text: `RCRP Review System — ${BRAND}` })
+    .setFooter({ text: `FSRP Review System — ${BRAND}` })
     .setTimestamp();
 }
 
@@ -161,7 +161,7 @@ function reviewPanel(memberName, periodLabel) {
 function selfRolesPanel() {
   return new EmbedBuilder()
     .setColor(0x9B59B6)
-    .setAuthor({ name: `🎭  RCRP SELF ROLES  —  ${BRAND}` })
+    .setAuthor({ name: `🎭  FSRP SELF ROLES  —  ${BRAND}` })
     .setTitle('Choose Your Roles')
     .setDescription(
       '> Click a button below to add or remove a role.\n\n' +
@@ -169,7 +169,7 @@ function selfRolesPanel() {
       '**🔔 Notification Roles** — Opt in/out of session, giveaway, and event pings\n\n' +
       '_You can toggle roles on and off at any time._'
     )
-    .setFooter({ text: `RCRP Self Roles — ${BRAND}` })
+    .setFooter({ text: `FSRP Self Roles — ${BRAND}` })
     .setTimestamp();
 }
 
@@ -178,14 +178,14 @@ function shiftLog(member, robloxUsername, durationMinutes, action) {
   const isStart = action === 'start';
   return new EmbedBuilder()
     .setColor(isStart ? 0x2D7D46 : 0x3D4045)
-    .setAuthor({ name: isStart ? `🟢  SHIFT STARTED  —  RCRP` : `⚫  SHIFT ENDED  —  RCRP`, iconURL: member.user.displayAvatarURL() })
+    .setAuthor({ name: isStart ? `🟢  SHIFT STARTED  —  FSRP` : `⚫  SHIFT ENDED  —  FSRP`, iconURL: member.user.displayAvatarURL() })
     .setTitle(isStart ? `${member.displayName} — On Duty` : `${member.displayName} — Off Duty`)
     .addFields(
       { name: '👤 Staff',     value: `<@${member.id}>`,  inline: true },
       { name: '🎮 Roblox',   value: robloxUsername,       inline: true },
       { name: '⏱️ Duration', value: isStart ? '—' : `${durationMinutes}m`, inline: true },
     )
-    .setFooter({ text: `RCRP Shift Tracker — ${BRAND}` })
+    .setFooter({ text: `FSRP Shift Tracker — ${BRAND}` })
     .setTimestamp();
 }
 
@@ -193,15 +193,15 @@ function shiftLog(member, robloxUsername, durationMinutes, action) {
 function honorPromotion(member, robloxUsername, label) {
   return new EmbedBuilder()
     .setColor(0x8B7536)
-    .setAuthor({ name: `🏆  HONOR MILESTONE  —  RCRP` })
+    .setAuthor({ name: `🏆  HONOR MILESTONE  —  FSRP` })
     .setTitle(`${member.displayName} — ${label}`)
-    .setDescription(`> **${member.displayName}** has reached **${label}** of in-game time at River City Role Play!\n\nThis milestone reflects outstanding dedication to the server. Congratulations!`)
+    .setDescription(`> **${member.displayName}** has reached **${label}** of in-game time at Florida State Roleplay!\n\nThis milestone reflects outstanding dedication to the server. Congratulations!`)
     .addFields(
       { name: '🔗 Discord', value: `<@${member.id}>`,  inline: true },
       { name: '🎮 Roblox',  value: robloxUsername,      inline: true },
       { name: '🏅 Milestone', value: label,              inline: true },
     )
-    .setFooter({ text: `RCRP Honor System — ${BRAND}` })
+    .setFooter({ text: `FSRP Honor System — ${BRAND}` })
     .setTimestamp();
 }
 

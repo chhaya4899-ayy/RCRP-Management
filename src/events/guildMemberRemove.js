@@ -26,7 +26,7 @@ module.exports = {
           { name: '🆔 ID',    value: member.id,             inline: true },
           { name: '🏷️ Had Roles', value: roleNames.length ? roleNames.join(', ').slice(0, 300) : 'None', inline: false },
         )
-        .setFooter({ text: `RCRP Leave Logger — ${isStaff ? '⚠️ Staff departure' : 'Standard leave'}` })
+        .setFooter({ text: `FSRP Leave Logger — ${isStaff ? '⚠️ Staff departure' : 'Standard leave'}` })
         .setTimestamp();
 
       await logCh.send({ embeds: [embed] });

@@ -9,7 +9,7 @@ const config      = require('../config');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('intel')
-    .setDescription('Pull a deep intel report on any Roblox player from RCRP game data.')
+    .setDescription('Pull a deep intel report on any Roblox player from FSRP game data.')
     .addStringOption(opt =>
       opt.setName('username')
         .setDescription('Roblox username or User ID to look up')

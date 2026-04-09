@@ -32,7 +32,7 @@
       if (!entry) {
         return interaction.editReply({ content: target.id === interaction.user.id
           ? 'You are not verified. Use /verify first.'
-          : target.displayName + ' is not verified in the RCRP database.' });
+          : target.displayName + ' is not verified in the FSRP database.' });
       }
 
       // Fetch game DB history

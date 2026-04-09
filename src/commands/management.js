@@ -164,7 +164,7 @@ async function handlePromote(interaction) {
       { name: 'By',         value: interaction.user.toString(), inline: true },
       { name: 'Note',       value: note,                      inline: false },
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   if (promoCh) await promoCh.send({ embeds: [embed] }).catch(() => {});
@@ -189,7 +189,7 @@ async function handleDemote(interaction) {
       { name: 'By', value: interaction.user.toString(), inline: true },
       { name: 'Reason', value: reason, inline: false },
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   if (logsChannel) await logsChannel.send({ embeds: [embed] }).catch(() => {});
@@ -216,7 +216,7 @@ async function handleFire(interaction) {
       { name: 'By',     value: interaction.user.toString(), inline: true },
       { name: 'Reason', value: reason, inline: false },
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   if (logsChannel) await logsChannel.send({ embeds: [embed] }).catch(() => {});
@@ -241,7 +241,7 @@ async function handleStrike(interaction) {
       { name: 'By',     value: interaction.user.toString(), inline: true },
       { name: 'Reason', value: reason, inline: false },
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   if (logsChannel) await logsChannel.send({ embeds: [embed] }).catch(() => {});
@@ -266,7 +266,7 @@ async function handleUnstrike(interaction) {
       { name: 'By',     value: interaction.user.toString(), inline: true },
       { name: 'Reason', value: reason, inline: false },
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   if (logsChannel) await logsChannel.send({ embeds: [embed] }).catch(() => {});
@@ -295,7 +295,7 @@ async function handleRoster(interaction) {
         ? staffInGame.map(p => `**${p._username}** — ${p._permission}${p._callsign ? ` [${p._callsign}]` : ''}`).join('\n')
         : 'No staff currently in-game.'
     )
-    .setFooter({ text: `RCRP Management • data ${cacheAge}s ago — River City Role Play` })
+    .setFooter({ text: `FSRP Management • data ${cacheAge}s ago — Florida State Roleplay` })
     .setTimestamp();
 
   await interaction.editReply({ embeds: [embed] });
@@ -326,7 +326,7 @@ async function handleLockdown(interaction) {
     .setColor(config.colors.danger)
     .setTitle('Server Lockdown')
     .setDescription(
-      `River City Role Play is currently under lockdown.\n\n` +
+      `Florida State Roleplay is currently under lockdown.\n\n` +
       `**Reason:** ${reason}\n\n` +
       `Please refrain from joining in-game or creating tickets until further notice.`
     )
@@ -334,7 +334,7 @@ async function handleLockdown(interaction) {
       { name: 'Ordered By', value: interaction.user.toString(), inline: true },
       { name: 'Time',       value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
     )
-    .setFooter({ text: 'RCRP Management — Official Notice' })
+    .setFooter({ text: 'FSRP Management — Official Notice' })
     .setTimestamp();
 
   await interaction.channel.send({ embeds: [embed] });
@@ -352,7 +352,7 @@ async function handleAnnounce(interaction) {
     .setTitle(title)
     .setDescription(message)
     .addFields({ name: 'Posted By', value: interaction.user.toString(), inline: true })
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   const content = ping ? `<@&${config.roles.announcementPing}>` : '';
@@ -402,7 +402,7 @@ async function handlePartnerList(interaction) {
     .setColor(config.colors.primary)
     .setTitle(`Active Partnerships (${partnerships.length})`)
     .setDescription(partnerships.map(p => `**${p.name}** — ${p.description}`).join('\n'))
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   await interaction.editReply({ embeds: [embed] });

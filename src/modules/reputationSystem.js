@@ -81,7 +81,7 @@ async function giveRep(interaction, targetMember) {
         .setColor(0x2D7D46)
         .setTitle('✅  Rep Given')
         .setDescription(`You gave **+1 rep** to ${targetMember}.\nThey now have **${records[targetMember.id].points} rep points**.`)
-        .setFooter({ text: 'RCRP Reputation System — River City Role Play' })
+        .setFooter({ text: 'FSRP Reputation System — Florida State Roleplay' })
         .setTimestamp()
     ]
   });
@@ -92,15 +92,15 @@ async function giveRep(interaction, targetMember) {
       embeds: [
         new EmbedBuilder()
           .setColor(0x8B7536)
-          .setAuthor({ name: '⭐  RCRP REPUTATION SYSTEM  —  River City Role Play' })
+          .setAuthor({ name: '⭐  FSRP REPUTATION SYSTEM  —  Florida State Roleplay' })
           .setTitle('🌟  You Received a Reputation Point!')
           .setDescription(
-            `**${giver.displayName}** gave you **+1 reputation point** on River City Role Play.\n\n` +
+            `**${giver.displayName}** gave you **+1 reputation point** on Florida State Roleplay.\n\n` +
             `> Your current rep: **${records[targetMember.id].points} points** ⭐\n\n` +
             `Keep up the great work — your positive impact in the community is noticed!`
           )
           .setThumbnail(giver.user.displayAvatarURL())
-          .setFooter({ text: 'RCRP Reputation System — River City Role Play' })
+          .setFooter({ text: 'FSRP Reputation System — Florida State Roleplay' })
           .setTimestamp()
       ]
     });
@@ -127,7 +127,7 @@ async function viewRep(interaction, targetMember) {
 
   const embed = new EmbedBuilder()
     .setColor(tierColor)
-    .setAuthor({ name: '⭐  RCRP REPUTATION PROFILE  —  River City Role Play' })
+    .setAuthor({ name: '⭐  FSRP REPUTATION PROFILE  —  Florida State Roleplay' })
     .setTitle(`${repTier}  —  ${target.displayName}`)
     .setThumbnail(target.user.displayAvatarURL())
     .addFields(
@@ -136,7 +136,7 @@ async function viewRep(interaction, targetMember) {
       { name: '🏆 Leaderboard Rank', value: rank > 0 ? `#${rank} of ${allEntries.length}` : 'Unranked', inline: true },
       { name: '📜 Recent Activity (last 5)', value: recentHistory, inline: false },
     )
-    .setFooter({ text: `RCRP Reputation System — Requested by ${interaction.user.username}` })
+    .setFooter({ text: `FSRP Reputation System — Requested by ${interaction.user.username}` })
     .setTimestamp();
 
   await interaction.editReply({ embeds: [embed] });

@@ -193,13 +193,13 @@ async function runGhostClock(snapshot, guild) {
               embeds: [new EmbedBuilder()
                 .setColor(0x2D7D46)
                 .setTitle('🟢 Staff On Duty')
-                .setDescription('<@' + user.discordId + '> (**' + user.robloxUsername + '**) is now in River City.')
+                .setDescription('<@' + user.discordId + '> (**' + user.robloxUsername + '**) is now in Florida State.')
                 .addFields(
                   { name: '👤 Discord', value: '<@' + user.discordId + '>', inline: true },
                   { name: '🎮 Roblox',  value: user.robloxUsername,         inline: true },
                   { name: '🏷️ Role',   value: topRole?.name || 'Staff',    inline: true },
                 )
-                .setFooter({ text: 'RCRP Shift Tracker — Session started' })
+                .setFooter({ text: 'FSRP Shift Tracker — Session started' })
                 .setTimestamp()]
             }).catch(() => {});
           }
@@ -215,13 +215,13 @@ async function runGhostClock(snapshot, guild) {
               embeds: [new EmbedBuilder()
                 .setColor(0x992D22)
                 .setTitle('🔴 Staff Off Duty')
-                .setDescription('<@' + user.discordId + '> (**' + user.robloxUsername + '**) left River City.')
+                .setDescription('<@' + user.discordId + '> (**' + user.robloxUsername + '**) left Florida State.')
                 .addFields(
                   { name: '👤 Discord',  value: '<@' + user.discordId + '>', inline: true },
                   { name: '🎮 Roblox',   value: user.robloxUsername,          inline: true },
                   { name: '⏱️ Session', value: durationMin + 'm',             inline: true },
                 )
-                .setFooter({ text: 'RCRP Shift Tracker — Session saved to database' })
+                .setFooter({ text: 'FSRP Shift Tracker — Session saved to database' })
                 .setTimestamp()]
             }).catch(() => {});
           }
@@ -377,7 +377,7 @@ async function runCommandLogs(snapshot, guild) {
         .setColor(color)
         .setTitle(`${emoji} In-Game Command — :${action.toUpperCase()}`)
         .addFields(...fields)
-        .setFooter({ text: 'RCRP In-Game Command Log  •  River City' })
+        .setFooter({ text: 'FSRP In-Game Command Log  •  Florida State' })
         .setTimestamp(ts);
 
       await logsCh.send({ embeds: [embed] }).catch(e => console.error('[Heartbeat] cmdLog send:', e.message));

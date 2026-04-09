@@ -61,13 +61,13 @@ async function pulse(snapshot) {
 
     const embed = new EmbedBuilder()
       .setColor(color)
-      .setTitle(`${prefix} — River City Crime Ticker`)
+      .setTitle(`${prefix} — Florida State Crime Ticker`)
       .setDescription(
         isLEO
           ? `Officer **${log.Killer}** (${killerTeam}) took down **${log.Killed}** (${killedTeam}) — ${timeTag()}`
           : `**${log.Killer}** eliminated **${log.Killed}** in a confrontation — ${timeTag()}`
       )
-      .setFooter({ text: 'RCRP Crime Ticker — River City Role Play' })
+      .setFooter({ text: 'FSRP Crime Ticker — Florida State Roleplay' })
       .setTimestamp();
 
     await send(embed);
@@ -84,9 +84,9 @@ async function pulse(snapshot) {
 
     const embed = new EmbedBuilder()
       .setColor(config.colors.blue)
-      .setTitle('🚨 ARREST — River City Crime Ticker')
+      .setTitle('🚨 ARREST — Florida State Crime Ticker')
       .setDescription(`**${log.Player || '?'}** issued \`${log.Command}\` — ${timeTag()}`)
-      .setFooter({ text: 'RCRP Crime Ticker — River City Role Play' })
+      .setFooter({ text: 'FSRP Crime Ticker — Florida State Roleplay' })
       .setTimestamp();
 
     await send(embed);
@@ -102,8 +102,8 @@ async function pulse(snapshot) {
     const embed = new EmbedBuilder()
       .setColor(config.colors.warning)
       .setTitle('📢 MOD CALLED — Staff Responding')
-      .setDescription(`A mod call was placed in River City. Staff are handling it. — ${timeTag()}`)
-      .setFooter({ text: 'RCRP Crime Ticker — River City Role Play' })
+      .setDescription(`A mod call was placed in Florida State. Staff are handling it. — ${timeTag()}`)
+      .setFooter({ text: 'FSRP Crime Ticker — Florida State Roleplay' })
       .setTimestamp();
 
     await send(embed);

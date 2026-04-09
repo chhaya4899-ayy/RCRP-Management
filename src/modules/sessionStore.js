@@ -41,7 +41,7 @@ async function endShift(robloxId, client) {
           { name: 'START_TS',     value: String(shift.startTime), inline: true },
           { name: 'END_TS',       value: String(Date.now()),      inline: true },
         )
-        .setFooter({ text: 'RCRP_SESSION_RECORD' })
+        .setFooter({ text: 'FSRP_SESSION_RECORD' })
         .setTimestamp();
       await dbCh.send({ embeds: [embed] }).catch(() => {});
     }
@@ -71,7 +71,7 @@ async function fetchAllSessions(guild) {
       for (const msg of batch.values()) {
         const embed = msg.embeds?.[0];
         if (!embed || embed.title !== '📋 SESSION_LOG') continue;
-        if (embed.footer?.text !== 'RCRP_SESSION_RECORD') continue;
+        if (embed.footer?.text !== 'FSRP_SESSION_RECORD') continue;
 
         const f = {};
         for (const field of embed.fields || []) f[field.name] = field.value;

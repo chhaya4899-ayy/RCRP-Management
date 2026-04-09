@@ -69,7 +69,7 @@ module.exports = {
           .setColor(config.colors.warning)
           .setTitle('🎲  Random RP Scenario')
           .setDescription('**' + (SCENARIOS[idx] || 'You discover an overturned vehicle on Route 7 with no driver in sight.') + '**')
-          .setFooter({ text: 'RCRP RP Tools — click to reroll again' })
+          .setFooter({ text: 'FSRP RP Tools — click to reroll again' })
           .setTimestamp();
         const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
         const row = new ActionRowBuilder().addComponents(
@@ -142,7 +142,7 @@ async function handleReviewModal(interaction) {
       { name: 'Reviewed By',  value: '<@' + interaction.user.id + '>', inline: true },
       { name: 'Staff Member', value: staffName, inline: true },
     )
-    .setFooter({ text: 'RCRP Staff Review System — River City Role Play' })
+    .setFooter({ text: 'FSRP Staff Review System — Florida State Roleplay' })
     .setTimestamp();
 
   await reviewCh.send({ embeds: [embed] });

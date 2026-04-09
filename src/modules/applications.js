@@ -1,4 +1,4 @@
-// applications.js — RCRP Application System
+// applications.js — FSRP Application System
 // Private channels, one-at-a-time Q&A, HR decisions, DMs, auto-role.
 // Result embeds match the Las Vegas Roleplay style from the reference screenshot.
 
@@ -28,10 +28,10 @@ async function postApplicationPanel(channel) {
 
   const embed = new EmbedBuilder()
     .setColor(config.colors.primary)
-    .setAuthor({ name: 'River City Role Play', iconURL: channel.guild.iconURL() || undefined })
-    .setTitle('RCRP — Staff Applications')
+    .setAuthor({ name: 'Florida State Roleplay', iconURL: channel.guild.iconURL() || undefined })
+    .setTitle('FSRP — Staff Applications')
     .setDescription(
-      'Think you have what it takes to be part of **River City Role Play**?\n\n' +
+      'Think you have what it takes to be part of **Florida State Roleplay**?\n\n' +
       '**Available Positions:**\n' + catList + '\n\n' +
       '**Requirements:** Verified Roblox account · No active strikes · Professional conduct\n\n' +
       '**Process:**\n' +
@@ -41,7 +41,7 @@ async function postApplicationPanel(channel) {
       '> 4. HR reviews within 24–48 hours\n' +
       '> 5. Decision posted in your channel + DM'
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   await channel.send({
@@ -67,7 +67,7 @@ async function handleApplyButton(interaction) {
   for (let i = 0; i < buttons.length; i += 5) rows.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
 
   await interaction.reply({
-    embeds:     [new EmbedBuilder().setColor(config.colors.primary).setTitle('Select Department').setDescription('Which department are you applying for?').setFooter({ text: 'RCRP Management — River City Role Play' })],
+    embeds:     [new EmbedBuilder().setColor(config.colors.primary).setTitle('Select Department').setDescription('Which department are you applying for?').setFooter({ text: 'FSRP Management — Florida State Roleplay' })],
     components: rows,
     ephemeral:  true,
   });
@@ -126,14 +126,14 @@ async function handleCategorySelect(interaction) {
 
   const intro = new EmbedBuilder()
     .setColor(config.colors.primary)
-    .setAuthor({ name: 'River City Role Play', iconURL: guild.iconURL() || undefined })
+    .setAuthor({ name: 'Florida State Roleplay', iconURL: guild.iconURL() || undefined })
     .setTitle(`${category.emoji} ${category.label} Application`)
     .setDescription(
       `Welcome, ${member}.\n\nThis is your **private application channel**.\n\n` +
       `You will be asked **${questions.length} questions** one at a time. Send your answer as a message after each one.\n\n` +
       `Be honest — HR reviews every answer. Your first question is below.`
     )
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   await appCh.send({ embeds: [intro] });
@@ -142,7 +142,7 @@ async function handleCategorySelect(interaction) {
   try {
     await member.send({ embeds: [new EmbedBuilder()
       .setColor(0x1D6FA5)
-      .setAuthor({ name: '📋  RCRP APPLICATIONS  —  River City Role Play' })
+      .setAuthor({ name: '📋  FSRP APPLICATIONS  —  Florida State Roleplay' })
       .setTitle(`${category.emoji}  Application Started — ${category.label}`)
       .setDescription(
         `Welcome to the **${category.label}** application process!
@@ -157,9 +157,9 @@ async function handleCategorySelect(interaction) {
 ` +
         `**Good luck! We are excited to review your application.**`
       )
-      .setFooter({ text: 'RCRP Applications — River City Role Play' })
+      .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
       .setTimestamp()
-      .setFooter({ text: 'RCRP Management — River City Role Play' })
+      .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
       .setTimestamp()
     ]});
   } catch {}
@@ -176,7 +176,7 @@ function askQuestion(channel, questions, qIndex) {
       .setColor(config.colors.neutral)
       .setTitle(`Question ${qIndex + 1} of ${questions.length}`)
       .setDescription(q.label)
-      .setFooter({ text: 'Reply with your answer — one message — RCRP Management' })
+      .setFooter({ text: 'Reply with your answer — one message — FSRP Management' })
   ]}).catch(() => {});
 }
 
@@ -214,7 +214,7 @@ async function finalizeApplication(channel, appData, client) {
 
   await channel.send({ embeds: [new EmbedBuilder()
     .setColor(0x2D7D46)
-    .setAuthor({ name: '✅  APPLICATION SUBMITTED  —  RCRP' })
+    .setAuthor({ name: '✅  APPLICATION SUBMITTED  —  FSRP' })
     .setTitle(`${category?.emoji || '📋'}  ${category?.label} Application — Submitted`)
     .setDescription(
       `> Your application has been received and is now under review.
@@ -229,11 +229,11 @@ async function finalizeApplication(channel, appData, client) {
       `> 3. Please be patient — do not DM HR staff directly
 
 ` +
-      `Thank you for applying to **River City Role Play**. We appreciate your interest!`
+      `Thank you for applying to **Florida State Roleplay**. We appreciate your interest!`
     )
-    .setFooter({ text: 'RCRP Applications — River City Role Play' })
+    .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
     .setTimestamp()
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp()
   ]});
 
@@ -241,7 +241,7 @@ async function finalizeApplication(channel, appData, client) {
     try {
       await member.send({ embeds: [new EmbedBuilder()
         .setColor(0x2D7D46)
-        .setAuthor({ name: '📬  APPLICATION SUBMITTED  —  RCRP' })
+        .setAuthor({ name: '📬  APPLICATION SUBMITTED  —  FSRP' })
         .setTitle(`Your ${category?.label} Application is In!`)
         .setDescription(
           `**Congratulations on completing your application!** 🎉
@@ -254,11 +254,11 @@ async function finalizeApplication(channel, appData, client) {
           `> Do **not** DM HR staff — they will reach out to you
 
 ` +
-          `We appreciate your interest in River City Role Play. Fingers crossed! 🤞`
+          `We appreciate your interest in Florida State Roleplay. Fingers crossed! 🤞`
         )
-        .setFooter({ text: 'RCRP Applications — River City Role Play' })
+        .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
         .setTimestamp()
-        .setFooter({ text: 'RCRP Management — River City Role Play' })
+        .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
         .setTimestamp()
       ]});
     } catch {}
@@ -281,14 +281,14 @@ async function finalizeApplication(channel, appData, client) {
       .setColor(config.colors.neutral)
       .setTitle(`Answers ${i + 1}–${Math.min(i + 5, questions.length)}`)
       .addFields(fields)
-      .setFooter({ text: 'RCRP Management' });
+      .setFooter({ text: 'FSRP Management' });
     if (hrCh) await hrCh.send({ embeds: [chunk] }).catch(() => {});
   }
 
   // Main HR embed with approve/deny/hold buttons
   const hrEmbed = new EmbedBuilder()
     .setColor(config.colors.primary)
-    .setAuthor({ name: 'River City Role Play', iconURL: guild.iconURL() || undefined })
+    .setAuthor({ name: 'Florida State Roleplay', iconURL: guild.iconURL() || undefined })
     .setTitle(`New Staff Application — ${category?.label}`)
     .setDescription(
       `**Applicant:** <@${appData.discordId}>\n` +
@@ -296,7 +296,7 @@ async function finalizeApplication(channel, appData, client) {
       `**Submitted:** <t:${Math.floor(Date.now()/1000)}:F>`
     )
     .addFields({ name: 'AI Recommendation', value: aiAnalysis.slice(0, 1024), inline: false })
-    .setFooter({ text: 'RCRP Management — River City Role Play' })
+    .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp();
 
   const btnRow = new ActionRowBuilder().addComponents(
@@ -392,11 +392,11 @@ async function processDecision(interaction, channelId, appData, decision, notes)
     .setColor(approved ? config.colors.success : onHold ? config.colors.warning : config.colors.danger)
     .setTitle(approved ? '✅ Application Approved' : onHold ? '⏸ Application On Hold' : '❌ Application Denied')
     .setDescription(
-      approved ? `✅ **Congratulations <@${appData.discordId}>!**\n\nYour **${category?.label}** application has been **APPROVED**! 🎉\n\n${config.approvalRoles?.[appData.category] ? 'Your role has been assigned automatically.' : 'An HR member will assign your role shortly.'}\n\n**Welcome to the River City Role Play team!**` :
+      approved ? `✅ **Congratulations <@${appData.discordId}>!**\n\nYour **${category?.label}** application has been **APPROVED**! 🎉\n\n${config.approvalRoles?.[appData.category] ? 'Your role has been assigned automatically.' : 'An HR member will assign your role shortly.'}\n\n**Welcome to the Florida State Roleplay team!**` :
       onHold   ? `⏸️ **<@${appData.discordId}>** — your **${category?.label}** application is currently **ON HOLD**.\n\nHR is still reviewing your answers and will follow up shortly. Please be patient.` :
                  `❌ **<@${appData.discordId}>** — your **${category?.label}** application was **not successful** this time.\n\nYou may reapply in **2 weeks**. Keep improving and we hope to see you again!`
     )
-    .setFooter({ text: `Reviewed by ${reviewer.username} • RCRP Management` })
+    .setFooter({ text: `Reviewed by ${reviewer.username} • FSRP Management` })
     .setTimestamp();
 
   if (notes) inChannelEmbed.addFields({ name: 'Notes', value: notes, inline: false });
@@ -407,19 +407,19 @@ async function processDecision(interaction, channelId, appData, decision, notes)
     try {
       const dmEmbed = new EmbedBuilder()
         .setColor(approved ? config.colors.success : onHold ? config.colors.warning : config.colors.danger)
-        .setTitle(approved ? 'Staff Application Accepted — RCRP' : onHold ? 'Application On Hold — RCRP' : 'Staff Application Denied — RCRP')
+        .setTitle(approved ? 'Staff Application Accepted — FSRP' : onHold ? 'Application On Hold — FSRP' : 'Staff Application Denied — FSRP')
         .setDescription(
           approved
           ? `🎉 **Your ${category?.label} application was APPROVED!**\n\n` +
             `> ${config.approvalRoles?.[appData.category] ? 'Your role has been assigned.' : 'An HR member will assign your role shortly.'}\n` +
             `> Head to the staff channels for your onboarding.\n` +
-            `> Welcome to **River City Role Play** — we are thrilled to have you!\n`
+            `> Welcome to **Florida State Roleplay** — we are thrilled to have you!\n`
           : onHold
           ? `⏸️ **Your ${category?.label} application is ON HOLD.**\n\n` +
             `> HR is still reviewing your application and will reach out shortly.\n` +
             `> Please be patient and watch your DMs and application channel.`
           : `❌ **Your ${category?.label} application was not successful this time.**\n\n` +
-            `> Thank you for your interest in River City Role Play.\n` +
+            `> Thank you for your interest in Florida State Roleplay.\n` +
             `> You may reapply in **2 weeks** — keep growing and try again! 💪`
         )
         .setFooter({ text: `Reviewed on: ${reviewedOn} • Reviewed by: ${reviewer.username}` })

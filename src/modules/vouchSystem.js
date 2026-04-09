@@ -48,18 +48,18 @@ async function postCommunityFavourite(userId, username, count, lastReason, guild
 
   const embed = new EmbedBuilder()
     .setColor(config.colors.gold)
-    .setTitle('🏆 COMMUNITY FAVOURITE — River City')
+    .setTitle('🏆 COMMUNITY FAVOURITE — Florida State')
     .setDescription(
-      `The River City community has spoken! **${username}** has received **${count} vouches** from fellow players.\n\n` +
+      `The Florida State community has spoken! **${username}** has received **${count} vouches** from fellow players.\n\n` +
       `Most recent recognition:\n> *"${lastReason}"*\n\n` +
-      `Thank you for making River City Role Play an incredible place.`
+      `Thank you for making Florida State Roleplay an incredible place.`
     )
     .setThumbnail(member?.displayAvatarURL() || null)
     .addFields(
       { name: '🌟 Community Rep', value: `${count} vouches`, inline: true },
       { name: '👤 Player',        value: `<@${userId}>`,     inline: true },
     )
-    .setFooter({ text: 'RCRP Community Rep System — River City' })
+    .setFooter({ text: 'FSRP Community Rep System — Florida State' })
     .setTimestamp();
 
   await ch.send({ content: `🎉 Congratulations <@${userId}>!`, embeds: [embed] }).catch(() => {});

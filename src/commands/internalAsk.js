@@ -149,7 +149,7 @@ module.exports = {
           { name: '📅 Date Filter', value: dateFilter || 'All dates',              inline: true  },
           { name: '🕵️ Requested By', value: interaction.user.toString(),           inline: true  },
         )
-        .setFooter({ text: 'RCRP Management Internal Affairs • Confidential' })
+        .setFooter({ text: 'FSRP Management Internal Affairs • Confidential' })
         .setTimestamp();
 
       // Also post to hr-central

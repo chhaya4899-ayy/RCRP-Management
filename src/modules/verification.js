@@ -1,4 +1,4 @@
-// verification.js — RCRP Verification System
+// verification.js — FSRP Verification System
 // Accepts Roblox username OR User ID.
 
 const axios  = require('axios');
@@ -14,10 +14,10 @@ async function postVerifyPanel(channel) {
 
   const embed = new EmbedBuilder()
     .setColor(0x1D6FA5)
-    .setAuthor({ name: '\uD83D\uDD10  RCRP VERIFICATION  \u2014  River City Role Play' })
+    .setAuthor({ name: '\uD83D\uDD10  FSRP VERIFICATION  \u2014  Florida State Roleplay' })
     .setTitle('Verify Your Roblox Account')
     .setDescription(
-      '> Link your Roblox account to gain **full access** to River City Role Play.\n\n' +
+      '> Link your Roblox account to gain **full access** to Florida State Roleplay.\n\n' +
       '**How to verify:**\n' +
       '> 1. Click **Verify** below\n' +
       '> 2. Enter your **Roblox username** or **User ID**\n' +
@@ -27,7 +27,7 @@ async function postVerifyPanel(channel) {
       '> `roblox.com/users/`**`12345678`**`/profile`\n\n' +
       '_Having trouble? Open a ticket or contact staff._'
     )
-    .setFooter({ text: 'RCRP Verification System \u2014 River City Role Play' })
+    .setFooter({ text: 'FSRP Verification System \u2014 Florida State Roleplay' })
     .setTimestamp();
 
   await channel.send({
@@ -43,7 +43,7 @@ async function handleVerifyButton(interaction) {
   if (verifiedRoleId && interaction.member.roles.cache.has(verifiedRoleId)) {
     return interaction.reply({ content: 'You are already verified! Contact staff if you need to update your account.', ephemeral: true });
   }
-  const modal = new ModalBuilder().setCustomId('verify_roblox_modal').setTitle('RCRP Verification');
+  const modal = new ModalBuilder().setCustomId('verify_roblox_modal').setTitle('FSRP Verification');
   modal.addComponents(new ActionRowBuilder().addComponents(
     new TextInputBuilder().setCustomId('roblox_input').setLabel('Roblox Username or User ID').setStyle(TextInputStyle.Short).setPlaceholder('e.g. Builderman  or  156').setRequired(true).setMinLength(1).setMaxLength(50)
   ));
@@ -93,24 +93,24 @@ async function handleVerifyModal(interaction) {
   if (verifyCh) await updateVerifyDb(verifyCh, member.id, robloxId, robloxUsername);
 
   // Reply
-  await interaction.editReply({ content: `You are now verified as **${robloxUsername}** (ID: \`${robloxId}\`). Welcome to RCRP!` });
+  await interaction.editReply({ content: `You are now verified as **${robloxUsername}** (ID: \`${robloxId}\`). Welcome to FSRP!` });
 
   // DM the user
   try {
     await member.send({
       embeds: [new EmbedBuilder()
         .setColor(0x2D7D46)
-        .setAuthor({ name: '\u2705  RCRP VERIFICATION  \u2014  River City Role Play' })
+        .setAuthor({ name: '\u2705  FSRP VERIFICATION  \u2014  Florida State Roleplay' })
         .setTitle('You Are Now Verified!')
         .setDescription(
-          `**Welcome to River City Role Play, ${robloxUsername}!** \uD83C\uDF89\n\n` +
+          `**Welcome to Florida State Roleplay, ${robloxUsername}!** \uD83C\uDF89\n\n` +
           `> Your Roblox account is now linked to your Discord.\n\n` +
           `**\uD83C\uDFAE Roblox Username:** ${robloxUsername}\n` +
           `**\uD83C\uDD94 Roblox ID:** \`${robloxId}\`\n\n` +
-          `You now have full server access. Read the rules, grab your roles, and enjoy River City!`
+          `You now have full server access. Read the rules, grab your roles, and enjoy Florida State!`
         )
         .setThumbnail(member.user.displayAvatarURL())
-        .setFooter({ text: 'RCRP Verification System \u2014 River City Role Play' })
+        .setFooter({ text: 'FSRP Verification System \u2014 Florida State Roleplay' })
         .setTimestamp()
       ]
     });

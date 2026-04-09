@@ -112,7 +112,7 @@
         const embed = new EmbedBuilder()
           .setColor(config.colors.primary)
           .setTitle('📊 Your In-Game Stats — ' + robloxUser)
-          .setDescription('Live data from the River City server snapshot.')
+          .setDescription('Live data from the Florida State server snapshot.')
           .addFields(
             { name: '🏷️ Team',     value: team,   inline: true },
             { name: '❤️ Health',   value: health, inline: true },
@@ -122,7 +122,7 @@
             { name: '🔴 Wanted',   value: wanted, inline: true },
             { name: '🔑 Permission', value: player.permission || 'Standard', inline: true },
           )
-          .setFooter({ text: 'RCRP Live Stats  •  Data from last snapshot  •  ' + robloxUser })
+          .setFooter({ text: 'FSRP Live Stats  •  Data from last snapshot  •  ' + robloxUser })
           .setTimestamp(new Date(snapshot._meta?.timestamp || Date.now()));
 
         return interaction.editReply({ embeds: [embed] });
@@ -153,7 +153,7 @@
                 .setColor(config.colors.neutral)
                 .setTitle('🚗 Vehicle Info — ' + robloxUser)
                 .setDescription('You are currently **on foot**. Get in a vehicle first!')
-                .setFooter({ text: 'RCRP Vehicle Info' }).setTimestamp(),
+                .setFooter({ text: 'FSRP Vehicle Info' }).setTimestamp(),
             ],
           });
         }
@@ -172,7 +172,7 @@
             { name: '🔑 Plate',   value: plate,  inline: true },
             { name: '🖼️ Livery',  value: livery, inline: true },
           )
-          .setFooter({ text: 'RCRP Live Vehicle Data' }).setTimestamp(new Date(snapshot._meta?.timestamp || Date.now()));
+          .setFooter({ text: 'FSRP Live Vehicle Data' }).setTimestamp(new Date(snapshot._meta?.timestamp || Date.now()));
 
         return interaction.editReply({ embeds: [embed] });
       }
@@ -194,7 +194,7 @@
                 .setColor(config.colors.neutral)
                 .setTitle('📍 Player Location — ' + username)
                 .setDescription('**' + username + '** is not on the server right now.')
-                .setFooter({ text: 'RCRP Location System' }).setTimestamp(),
+                .setFooter({ text: 'FSRP Location System' }).setTimestamp(),
             ],
           });
         }
@@ -216,7 +216,7 @@
             { name: '🏷️ Team',    value: player._team || 'Civilian', inline: true },
             { name: '❤️ Health',  value: (player._health != null ? Math.round(player._health) + '%' : 'N/A'), inline: true },
           )
-          .setFooter({ text: 'RCRP Location System' }).setTimestamp(new Date(snapshot._meta?.timestamp || Date.now()));
+          .setFooter({ text: 'FSRP Location System' }).setTimestamp(new Date(snapshot._meta?.timestamp || Date.now()));
 
         return interaction.editReply({ embeds: [embed] });
       }
@@ -238,7 +238,7 @@
             { name: '📝 Submitted By',   value: '<@' + interaction.user.id + '> — ' + interaction.member.displayName, inline: true },
             { name: '📅 Date',           value: '<t:' + Math.floor(Date.now()/1000) + ':F>', inline: true },
           )
-          .setFooter({ text: 'RCRP Scenario Board  •  Upvote to get it played!' })
+          .setFooter({ text: 'FSRP Scenario Board  •  Upvote to get it played!' })
           .setTimestamp();
 
         const voteRow = new ActionRowBuilder().addComponents(
@@ -282,7 +282,7 @@
             { name: '💬 Reason',      value: reason.slice(0, 500), inline: false },
             { name: '📅 Date',        value: '<t:' + Math.floor(Date.now()/1000) + ':F>', inline: true },
           )
-          .setFooter({ text: 'RCRP Vouch System  •  Community Recognition' })
+          .setFooter({ text: 'FSRP Vouch System  •  Community Recognition' })
           .setTimestamp();
 
         await vouchCh.send({ embeds: [embed] });

@@ -42,7 +42,7 @@ async function pulse(snapshot) {
 
       const embed = new EmbedBuilder()
         .setColor(color)
-        .setAuthor({ name: '🚔  LIVE PURSUIT ALERT  —  RCRP MDT' })
+        .setAuthor({ name: '🚔  LIVE PURSUIT ALERT  —  FSRP MDT' })
         .setTitle(`${starBar}  ${name}  |  ${stars}★ WANTED`)
         .setDescription(
           `> **Threat Level:** ${stars >= 5 ? '🔴 EXTREME — ALL UNITS' : stars >= 4 ? '🟠 HIGH — MULTIPLE UNITS' : '🟡 ELEVATED — RESPOND WITH CAUTION'}\n` +
@@ -56,7 +56,7 @@ async function pulse(snapshot) {
           { name: '🆔 Player',              value: name,    inline: true },
           { name: '🕐 Reported',            value: `<t:${Math.floor(now/1000)}:T>`, inline: true },
         )
-        .setFooter({ text: 'RCRP Pursuit Tracker — River City Role Play MDT' })
+        .setFooter({ text: 'FSRP Pursuit Tracker — Florida State Roleplay MDT' })
         .setTimestamp();
 
       try {
@@ -75,14 +75,14 @@ async function pulse(snapshot) {
       const starBar = '⭐'.repeat(stars) + '☆'.repeat(Math.max(0, 6 - stars));
       const embed = new EmbedBuilder()
         .setColor(color)
-        .setAuthor({ name: '🚔  LIVE PURSUIT ALERT  —  RCRP MDT' })
+        .setAuthor({ name: '🚔  LIVE PURSUIT ALERT  —  FSRP MDT' })
         .setTitle(`${starBar}  ${name}  |  ${stars}★ WANTED — UPDATED`)
         .addFields(
           { name: '📍 Last Known', value: postal, inline: true },
           { name: '🚗 Vehicle',    value: vehicle, inline: true },
           { name: '⭐ Stars',      value: String(stars), inline: true },
         )
-        .setFooter({ text: 'RCRP Pursuit Tracker — Updated' })
+        .setFooter({ text: 'FSRP Pursuit Tracker — Updated' })
         .setTimestamp();
       try { await rec.msg.edit({ embeds: [embed] }); } catch {}
       rec.stars = stars;
@@ -101,7 +101,7 @@ async function pulse(snapshot) {
           .setColor(0x2D7D46)
           .setTitle(`✅  Pursuit Resolved — ${rec.name}`)
           .setDescription(currentIds.has(uid) ? '> Suspect cleared — wanted level dropped.' : '> Suspect left the server.')
-          .setFooter({ text: 'RCRP Pursuit Tracker — River City Role Play' })
+          .setFooter({ text: 'FSRP Pursuit Tracker — Florida State Roleplay' })
           .setTimestamp();
         await mdtCh.send({ embeds: [embed] });
         await rec.msg.edit({ content: '~~' + '' + '~~' }).catch(() => {});

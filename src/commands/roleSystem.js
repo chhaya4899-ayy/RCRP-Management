@@ -117,7 +117,7 @@
       .setColor(config.colors.primary)
       .setTitle(title)
       .setDescription(description)
-      .setFooter({ text: 'Panel ID: ' + panelId + ' • RCRP Role System' })
+      .setFooter({ text: 'Panel ID: ' + panelId + ' • FSRP Role System' })
       .setTimestamp();
     if (image) embed.setImage(image.url);
 

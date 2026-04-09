@@ -107,13 +107,13 @@ async function runIntel(interaction, robloxUsername) {
   // ── 5. Build embed
   const embed = new EmbedBuilder()
     .setColor(riskColor)
-    .setAuthor({ name: '🔍  RCRP INTEL REPORT  —  CLASSIFIED' })
+    .setAuthor({ name: '🔍  FSRP INTEL REPORT  —  CLASSIFIED' })
     .setTitle(`📋  Intel File: ${robloxUsername}`)
     .setDescription(
       foundAny
-        ? `> Compiled from **${snapshots.length}** game database snapshots.\n> Intelligence covers all recorded activity in RCRP.\n\n` +
+        ? `> Compiled from **${snapshots.length}** game database snapshots.\n> Intelligence covers all recorded activity in FSRP.\n\n` +
           `**Risk Assessment:** ${riskLabel}`
-        : `> No in-game data found for **${robloxUsername}** in the RCRP database.\n> Player may be new, or has never joined the server.`
+        : `> No in-game data found for **${robloxUsername}** in the FSRP database.\n> Player may be new, or has never joined the server.`
     );
 
   if (foundAny) {
@@ -133,7 +133,7 @@ async function runIntel(interaction, robloxUsername) {
     { name: '⚠️ Risk Level',   value: riskLabel, inline: true },
   );
 
-  embed.setFooter({ text: `RCRP Intel System — Requested by ${interaction.user.username} — River City Role Play` }).setTimestamp();
+  embed.setFooter({ text: `FSRP Intel System — Requested by ${interaction.user.username} — Florida State Roleplay` }).setTimestamp();
 
   await interaction.editReply({ embeds: [embed] });
 }

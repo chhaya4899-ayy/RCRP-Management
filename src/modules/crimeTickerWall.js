@@ -66,16 +66,16 @@ async function _updateWantedWall(snapshot) {
 
     const embed = new EmbedBuilder()
       .setColor(criminals.length > 0 ? 0xED4245 : 0x2D7D46)
-      .setTitle('🚨  LIBERTY COUNTY — CRIMINAL ACTIVITY BOARD')
-      .setFooter({ text: '🏙️ ' + total + ' players in-game  ·  RCRP Live Board  ·  Updates every 20s' })
+      .setTitle('🚨  Florida State — CRIMINAL ACTIVITY BOARD')
+      .setFooter({ text: '🏙️ ' + total + ' players in-game  ·  FSRP Live Board  ·  Updates every 20s' })
       .setTimestamp();
 
     if (criminals.length === 0) {
-      embed.setDescription('✅  **River City is clear.** No active criminals.\n*Last updated ' + new Date().toUTCString() + '*');
+      embed.setDescription('✅  **Florida State is clear.** No active criminals.\n*Last updated ' + new Date().toUTCString() + '*');
     } else {
       embed.setDescription(
         '**' + criminals.length + '** active criminal' + (criminals.length !== 1 ? 's' : '') +
-        ' currently in River City.\n*Data ' + (require('../utils/erlc').getCacheAge?.() || '?') + 's old*'
+        ' currently in Florida State.\n*Data ' + (require('../utils/erlc').getCacheAge?.() || '?') + 's old*'
       );
       for (const c of criminals.slice(0, 20)) {
         embed.addFields({
@@ -140,7 +140,7 @@ async function _postCrimeTicker(snapshot) {
           { name: '💀 Victim', value: kill.Killed || 'Unknown', inline: true },
           { name: '🕐 Time',   value: ts,                       inline: true },
         )
-        .setFooter({ text: 'RCRP Live Crime Feed' })
+        .setFooter({ text: 'FSRP Live Crime Feed' })
         .setTimestamp();
 
       await tickerCh.send({ embeds: [embed] }).catch(() => {});

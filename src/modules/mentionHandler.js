@@ -1,4 +1,4 @@
-// mentionHandler.js — @RCRP Management AI responder
+// mentionHandler.js — @FSRP Management AI responder
 // Triggers on-demand index if needed, answers with channel citations.
 
 const config    = require('../config');
@@ -62,7 +62,7 @@ async function getUserHistory(member, guild) {
 
     const { users } = await db.getVerifyDb(verifyCh);
     const entry = users.find(u => u.discordId === member.id && u.status === 'active');
-    if (!entry) return `${member.displayName} is not verified in the RCRP database.`;
+    if (!entry) return `${member.displayName} is not verified in the FSRP database.`;
 
     const robloxId = String(entry.robloxId);
     const gameCh   = guild.channels.cache.get(config.channels.gameDatabase);

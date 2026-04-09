@@ -1,4 +1,4 @@
-// serverBrain.js — RCRP Server Intelligence
+// serverBrain.js — FSRP Server Intelligence
 // Scans ALL Discord channels every 2 minutes (including locked ones — bot reads all).
 // Builds ONE living server-brain.json in the discord database channel.
 // Edits the existing file message instead of posting new ones each cycle.
@@ -185,7 +185,7 @@ async function _saveBrainEditing(dbCh, brain) {
   if (_brainMsgId) {
     const existing = await dbCh.messages.fetch(_brainMsgId).catch(() => null);
     if (existing) {
-      await existing.edit({ content: '`server-brain.json` — RCRP Server Brain (live)', files: [attachment] }).catch(() => {
+      await existing.edit({ content: '`server-brain.json` — FSRP Server Brain (live)', files: [attachment] }).catch(() => {
         _brainMsgId = null;
       });
       if (_brainMsgId) return; // edited successfully
@@ -195,7 +195,7 @@ async function _saveBrainEditing(dbCh, brain) {
   }
 
   // Post fresh
-  const sent = await dbCh.send({ content: '`server-brain.json` — RCRP Server Brain (live)', files: [attachment] }).catch(() => null);
+  const sent = await dbCh.send({ content: '`server-brain.json` — FSRP Server Brain (live)', files: [attachment] }).catch(() => null);
   if (sent) _brainMsgId = sent.id;
 }
 

@@ -69,7 +69,7 @@ module.exports = {
         .setColor(config.colors.primary)
         .setTitle(`👥  Players in ${snapshot.server.Name || 'ERLC Server'}`)
         .setDescription(`Total Players: **${players.length}/${snapshot.server.MaxPlayers || 'N/A'}**`)
-        .setFooter({ text: 'RCRP Management • ERLC Real-Time Data' })
+        .setFooter({ text: 'FSRP Management • ERLC Real-Time Data' })
         .setTimestamp();
 
       for (const [team, members] of Object.entries(teams)) {
@@ -120,7 +120,7 @@ module.exports = {
           { name: '⏱️ Cache Age',       value: `${cacheAge}s ago`,              inline: true },
           { name: '📡 API Status',      value: '🟢 Operational',                inline: true }
         )
-        .setFooter({ text: 'RCRP Management • System Diagnostics' })
+        .setFooter({ text: 'FSRP Management • System Diagnostics' })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });

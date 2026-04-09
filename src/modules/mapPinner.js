@@ -43,7 +43,7 @@
     if (!url || url.includes('placeholder')) { _baseMapFailed = true; return null; }
     try {
       const response = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; RCRP-Bot)' },
+        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; FSRP-Bot)' },
         signal: AbortSignal.timeout(10000),
       });
       if (!response.ok) { _baseMapFailed = true; return null; }
@@ -143,7 +143,7 @@
 
       ctx.fillStyle = '#ffffff';
       ctx.font      = 'bold 14px Arial';
-      ctx.fillText('LIBERTY COUNTY — LIVE CRIMINAL MAP', 30, 22);
+      ctx.fillText('Florida State — LIVE CRIMINAL MAP', 30, 22);
 
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
       ctx.font      = '10px Arial';
@@ -155,7 +155,7 @@
       ctx.fillRect(0, MAP_H - 22, MAP_W, 22);
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
       ctx.font      = '9px Arial';
-      ctx.fillText('⬤ = All Players    🔴 = Wanted Criminals    ★ = Wanted Stars    RCRP Automated Map System', 8, MAP_H - 7);
+      ctx.fillText('⬤ = All Players    🔴 = Wanted Criminals    ★ = Wanted Stars    FSRP Automated Map System', 8, MAP_H - 7);
 
       return canvas.toBuffer('image/png');
     } catch (err) {
@@ -246,7 +246,7 @@
 
       const embed = new EmbedBuilder()
         .setColor(config.colors.danger)
-        .setTitle('🗺️  River City — Live Criminal Map')
+        .setTitle('🗺️  Florida State — Live Criminal Map')
         .setDescription(
           wanted.length === 0
             ? '✅ **City is clear.** No active wanted criminals.'
@@ -263,7 +263,7 @@
           { name: 'Total Players',    value: String(allPlayer.length), inline: true },
           { name: 'Last Updated',     value: '<t:' + Math.floor(Date.now()/1000) + ':R>', inline: true },
         )
-        .setFooter({ text: 'RCRP Live Map  •  Refreshes every 2 minutes' })
+        .setFooter({ text: 'FSRP Live Map  •  Refreshes every 2 minutes' })
         .setTimestamp();
 
       const send = async () => {

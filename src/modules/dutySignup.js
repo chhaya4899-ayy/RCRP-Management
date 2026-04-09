@@ -43,7 +43,7 @@ function buildEmbed(sid) {
     .setTitle(`📋 Duty Sign-Up — ${s.title}`)
     .setDescription(`**Session Time:** ${s.time}\n\nSign up to let management plan the roster before the session starts.`)
     .addFields({ name: `📌 Signed Up (${s.signups.size})`, value: signupList.slice(0, 1024), inline: false })
-    .setFooter({ text: 'RCRP Duty Signup — Staff Management' })
+    .setFooter({ text: 'FSRP Duty Signup — Staff Management' })
     .setTimestamp();
 }
 

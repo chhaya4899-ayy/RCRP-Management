@@ -24,11 +24,11 @@ module.exports = {
   name: 'ready',
   once: true,
   async execute(client) {
-    console.log('\n✅ RCRP Management online as ' + client.user.tag);
+    console.log('\n✅ FSRP Management online as ' + client.user.tag);
     console.log('📡 Guild: ' + process.env.GUILD_ID);
     console.log('🕐 ' + new Date().toISOString() + '\n');
 
-    client.user.setPresence({ activities: [{ name: 'River City Role Play', type: ActivityType.Watching }], status: 'online' });
+    client.user.setPresence({ activities: [{ name: 'Florida State Roleplay', type: ActivityType.Watching }], status: 'online' });
 
     try { await deployCommands(); } catch (e) { console.error('[Ready] Deploy error:', e.message); }
 
@@ -80,7 +80,7 @@ module.exports = {
     // Start server brain (scans channels every 2 min, learns from messages)
     serverBrain.init(client);
 
-    console.log('🚀 RCRP Management fully operational.\n');
+    console.log('🚀 FSRP Management fully operational.\n');
   },
 };
 

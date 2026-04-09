@@ -17,7 +17,7 @@ const loaStore = new Map();
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('loa')
-    .setDescription('Leave of Absence management for RCRP staff.')
+    .setDescription('Leave of Absence management for FSRP staff.')
     .addSubcommand(s => s
       .setName('request')
       .setDescription('Submit a leave of absence request.')
@@ -76,7 +76,7 @@ async function handleRequest(interaction) {
 
   const embed = new EmbedBuilder()
     .setColor(config.colors.warning)
-    .setAuthor({ name: 'RCRP — Leave of Absence Request', iconURL: guild.iconURL() || undefined })
+    .setAuthor({ name: 'FSRP — Leave of Absence Request', iconURL: guild.iconURL() || undefined })
     .setTitle('Pending Approval')
     .setThumbnail(member.displayAvatarURL())
     .setDescription(`**${member.displayName}** has requested a Leave of Absence.\n\n**Reason:** ${reason}`)
@@ -85,7 +85,7 @@ async function handleRequest(interaction) {
       { name: 'Duration',     value: `${start} → ${end}`,                    inline: true },
       { name: 'Requested',    value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
     )
-    .setFooter({ text: 'RCRP Management — LOA System' })
+    .setFooter({ text: 'FSRP Management — LOA System' })
     .setTimestamp();
 
   const row = new ActionRowBuilder().addComponents(
@@ -104,9 +104,9 @@ async function handleRequest(interaction) {
   try {
     await member.send({ embeds: [new EmbedBuilder()
       .setColor(config.colors.warning)
-      .setTitle('LOA Request Submitted — RCRP')
+      .setTitle('LOA Request Submitted — FSRP')
       .setDescription(`Your LOA from **${start}** to **${end}** is pending management approval.\n\n**Reason:** ${reason}\n\nYou'll be DM'd with the decision.`)
-      .setFooter({ text: 'RCRP Management — River City Role Play' })
+      .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
       .setTimestamp()
     ]});
   } catch {}
@@ -126,8 +126,8 @@ async function handleList(interaction) {
 
   const embed = new EmbedBuilder()
     .setColor(config.colors.primary)
-    .setTitle('RCRP — Leave of Absence List')
-    .setFooter({ text: 'RCRP Management — LOA System' })
+    .setTitle('FSRP — Leave of Absence List')
+    .setFooter({ text: 'FSRP Management — LOA System' })
     .setTimestamp();
 
   if (active.length) {
@@ -164,7 +164,7 @@ async function handleEnd(interaction) {
       .setTitle('LOA Ended — Staff Returned')
       .setDescription(`<@${member.id}> has returned from their leave. Welcome back!`)
       .addFields({ name: 'LOA Duration Was', value: `${loa.startDate} → ${loa.endDate}`, inline: true })
-      .setFooter({ text: 'RCRP Management — LOA System' })
+      .setFooter({ text: 'FSRP Management — LOA System' })
       .setTimestamp()
     ]}).catch(() => {});
   }
@@ -206,7 +206,7 @@ async function handleLOADecision(interaction, decision) {
 
   const resultEmbed = new EmbedBuilder()
     .setColor(approved ? config.colors.success : config.colors.danger)
-    .setAuthor({ name: 'RCRP — Leave of Absence Decision', iconURL: guild.iconURL() || undefined })
+    .setAuthor({ name: 'FSRP — Leave of Absence Decision', iconURL: guild.iconURL() || undefined })
     .setTitle(`LOA ${approved ? 'Approved ✅' : 'Denied ❌'}`)
     .setDescription(
       approved
@@ -214,7 +214,7 @@ async function handleLOADecision(interaction, decision) {
         : `<@${userId}>'s LOA request has been **denied** by management.`
     )
     .addFields({ name: 'Decision By', value: interaction.user.toString(), inline: true })
-    .setFooter({ text: 'RCRP Management — LOA System' })
+    .setFooter({ text: 'FSRP Management — LOA System' })
     .setTimestamp();
 
   if (ch) await ch.send({ content: `<@${userId}>`, embeds: [resultEmbed] }).catch(() => {});
@@ -224,13 +224,13 @@ async function handleLOADecision(interaction, decision) {
     try {
       await member.send({ embeds: [new EmbedBuilder()
         .setColor(approved ? config.colors.success : config.colors.danger)
-        .setTitle(`Your LOA was ${approved ? 'Approved' : 'Denied'} — RCRP`)
+        .setTitle(`Your LOA was ${approved ? 'Approved' : 'Denied'} — FSRP`)
         .setDescription(
           approved
             ? `Your LOA from **${loa.startDate}** to **${loa.endDate}** has been approved!\nUse \`/loa end\` when you return.`
             : 'Your LOA request was denied by management. Please reach out if you have questions.'
         )
-        .setFooter({ text: 'RCRP Management — River City Role Play' })
+        .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
         .setTimestamp()
       ]});
     } catch {}

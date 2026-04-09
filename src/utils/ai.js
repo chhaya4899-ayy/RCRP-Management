@@ -29,13 +29,13 @@ async function chat(system, user, maxTokens = 600) {
 
 async function generateDispatch(callText, players) {
   const staff = players.filter(p => p._permission && !['None', 'Normal'].includes(p._permission)).length;
-  const sys = `You are a professional dispatch AI for the River City Role Play ERLC server. ${players.length} players online, ${staff} staff on duty. Give a short, tactical dispatch recommendation in 2–3 sentences. Be direct and action-oriented.`;
+  const sys = `You are a professional dispatch AI for the Florida State Roleplay ERLC server. ${players.length} players online, ${staff} staff on duty. Give a short, tactical dispatch recommendation in 2–3 sentences. Be direct and action-oriented.`;
   return (await chat(sys, callText, 200)) || 'Handle according to standard protocol.';
 }
 
 async function analyzeApplication(category, answers, questions) {
   const text = questions.map((q, i) => `Q${i+1}: ${q.label}\nA: ${answers[q.id] || 'No answer'}`).join('\n\n');
-  const sys = `You are an HR analyst for River City Role Play. Analyze this ${category} staff application. Note any red flags (copy-paste, vague/low-effort answers) or genuine strengths. Give a final recommendation: APPROVE, DENY, or REVIEW. Be concise and professional. Max 250 words.`;
+  const sys = `You are an HR analyst for Florida State Roleplay. Analyze this ${category} staff application. Note any red flags (copy-paste, vague/low-effort answers) or genuine strengths. Give a final recommendation: APPROVE, DENY, or REVIEW. Be concise and professional. Max 250 words.`;
   return (await chat(sys, text, 400)) || 'AI analysis unavailable. Please review manually.';
 }
 
@@ -43,7 +43,7 @@ async function analyzeApplication(category, answers, questions) {
 // serverContext = string of all indexed channel content with [Source: #channel] markers
 // userHistory = string summary of user's game data
 async function answerQuestion(question, serverContext, userHistory, displayName) {
-  const sys = `You are RCRP Management, the official AI assistant for the River City Role Play Discord server. You know everything about this server because you have indexed every channel.
+  const sys = `You are FSRP Management, the official AI assistant for the Florida State Roleplay Discord server. You know everything about this server because you have indexed every channel.
 
 You answer questions using the server knowledge below. When you cite a rule or fact, mention the source channel in brackets like [Source: #rules-channel]. Be direct, friendly, and human-sounding. If something isn't covered in the knowledge base, say so honestly.
 

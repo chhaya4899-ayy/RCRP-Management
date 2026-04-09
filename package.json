@@ -1,5 +1,5 @@
 {
-  "name": "xero-rcrp-bot",
+  "name": "xero-fsrp-bot",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -8,16 +8,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kushwork1209-prog/RCRP-Management.git"
+    "url": "git+https://github.com/kushwork1209-prog/FSRP-Management.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/kushwork1209-prog/RCRP-Management/issues"
+    "url": "https://github.com/kushwork1209-prog/FSRP-Management/issues"
   },
-  "homepage": "https://github.com/kushwork1209-prog/RCRP-Management#readme",
-  "description": "RCRP Management — River City Role Play Management Bot. Zero-Persistence, ERLC-integrated, AI-powered.",
+  "homepage": "https://github.com/kushwork1209-prog/FSRP-Management#readme",
+  "description": "FSRP Management — Florida State Roleplay Management Bot. Zero-Persistence, ERLC-integrated, AI-powered.",
   "dependencies": {
     "@discordjs/builders": "^1.14.0",
     "@discordjs/rest": "^2.6.1",

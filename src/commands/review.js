@@ -90,9 +90,9 @@
 
     const embed = new EmbedBuilder()
       .setColor(config.colors.primary)
-      .setTitle('RCRP Staff Directory — ' + staff.size + ' members')
+      .setTitle('FSRP Staff Directory — ' + staff.size + ' members')
       .setDescription('All members with staff roles. Use `/review submit` to review any of them.')
-      .setFooter({ text: 'RCRP Management — River City Role Play' })
+      .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
       .setTimestamp();
 
     for (const [label, members] of Object.entries(groups).sort((a, b) => b[1].length - a[1].length)) {
@@ -123,7 +123,7 @@
     let aiMsg = '';
     try {
       aiMsg = await ai.chat(
-        'You are the RCRP Management bot. Write short warm appreciation messages for staff members receiving reviews. Keep it genuine and punchy.',
+        'You are the FSRP Management bot. Write short warm appreciation messages for staff members receiving reviews. Keep it genuine and punchy.',
         'Staff member "' + targetMember.displayName + '" (' + roleLabel + ') got ' + stars + '/5 stars: "' + comment.slice(0, 150) + '". Write a short warm shoutout.',
         100
       ) || '';
@@ -140,7 +140,7 @@
         { name: 'Role',         value: roleLabel,                    inline: true },
         { name: 'Reviewed By',  value: '<@' + reviewer.id + '>',    inline: true },
       )
-      .setFooter({ text: 'RCRP Management — Staff Review System' })
+      .setFooter({ text: 'FSRP Management — Staff Review System' })
       .setTimestamp();
 
     const reviewCh = guild.channels.cache.get(REVIEW_CHANNEL);
@@ -152,7 +152,7 @@
         .setTitle('You received a staff review!')
         .setDescription(starStr + ' ' + starLabel + ' — ' + stars + '/5\n\n"' + comment + '"' + (aiMsg ? '\n\n*' + aiMsg + '*' : ''))
         .addFields({ name: 'Reviewed By', value: reviewer.username })
-        .setFooter({ text: 'RCRP Management' }).setTimestamp();
+        .setFooter({ text: 'FSRP Management' }).setTimestamp();
       await targetMember.send({ embeds: [dmEmbed] });
     } catch {}
 
@@ -191,7 +191,7 @@
         .setThumbnail(targetUser.displayAvatarURL())
         .setDescription(count + ' review' + (count !== 1 ? 's' : '') + ' — Average: **' + avg + '/5** ' + avgStars)
         .addFields({ name: 'Full History', value: 'See <#' + REVIEW_CHANNEL + '> for all posted reviews.' })
-        .setFooter({ text: 'RCRP Management — Staff Review System' })
+        .setFooter({ text: 'FSRP Management — Staff Review System' })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });

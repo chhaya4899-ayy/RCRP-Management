@@ -84,7 +84,7 @@
           { name: 'Posted',    value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
           { name: 'Posted By', value: interaction.user.toString(),               inline: true },
         )
-        .setFooter({ text: 'RCRP Management — River City Role Play' })
+        .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
         .setTimestamp();
 
       if (image) embed.setImage(image.url);

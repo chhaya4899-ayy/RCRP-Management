@@ -110,7 +110,7 @@ module.exports = {
             { name: '👮 Issued By', value: `${interaction.member.displayName} (<@${interaction.user.id}>)`, inline: true },
             { name: '⏰ Time',      value: `<t:${Math.floor(Date.now() / 1000)}:T>`, inline: true },
           )
-          .setFooter({ text: 'RCRP Game Action Log' })
+          .setFooter({ text: 'FSRP Game Action Log' })
           .setTimestamp();
         await logCh.send({ embeds: [actionEmbed] }).catch(() => {});
       }
@@ -124,7 +124,7 @@ module.exports = {
           { name: 'Run By',   value: '<@' + interaction.user.id + '>',  inline: true },
           { name: 'Status',   value: result.ok ? 'Executed in-game' : (result.error || 'Unknown error'), inline: true },
         )
-        .setFooter({ text: 'RCRP Management In-Game Command Runner' })
+        .setFooter({ text: 'FSRP Management In-Game Command Runner' })
         .setTimestamp();
       return interaction.editReply({ embeds: [embed] });
     }
@@ -159,7 +159,7 @@ module.exports = {
       for (const p of snapshot.players || []) teams[p._team] = (teams[p._team] || 0) + 1;
       const embed = new EmbedBuilder()
         .setColor(config.colors.primary)
-        .setTitle('RCRP — Live Server Overview')
+        .setTitle('FSRP — Live Server Overview')
         .addFields(
           { name: '👥 Players',  value: String(snapshot.players.length),                       inline: true },
           { name: '🔒 Max',      value: String(srv.MaxPlayers || '?'),                          inline: true },

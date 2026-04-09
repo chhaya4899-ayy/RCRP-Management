@@ -44,7 +44,7 @@ async function pulse(snapshot) {
     _lastOfflineAlert = now;
     const embed = new EmbedBuilder()
       .setColor(0x992D22)
-      .setAuthor({ name: '⚠️  RCRP ALERT SYSTEM  —  AUTOMATED MONITOR' })
+      .setAuthor({ name: '⚠️  FSRP ALERT SYSTEM  —  AUTOMATED MONITOR' })
       .setTitle('🔴  Server Offline / Unreachable')
       .setDescription(
         '> The ERLC game server is currently **offline or not responding**.\n\n' +
@@ -52,7 +52,7 @@ async function pulse(snapshot) {
         'All live features are paused until the server comes back online.'
       )
       .addFields({ name: '🕐 Detected At', value: `<t:${Math.floor(now/1000)}:F>`, inline: true })
-      .setFooter({ text: 'RCRP Staff Alert System — River City Role Play' })
+      .setFooter({ text: 'FSRP Staff Alert System — Florida State Roleplay' })
       .setTimestamp();
     await _sendAlert(staffCh || mdtCh, embed);
   }
@@ -63,14 +63,14 @@ async function pulse(snapshot) {
     _lastOnlineAlert = now;
     const embed = new EmbedBuilder()
       .setColor(0x2D7D46)
-      .setAuthor({ name: '✅  RCRP ALERT SYSTEM  —  AUTOMATED MONITOR' })
+      .setAuthor({ name: '✅  FSRP ALERT SYSTEM  —  AUTOMATED MONITOR' })
       .setTitle('🟢  Server Back Online')
       .setDescription('> The ERLC server is **back online** and responding normally.\n\nAll live features have resumed. MDT, shift cards, and crime ticker are active.')
       .addFields(
         { name: '👥 Current Players', value: String(playerCount), inline: true },
         { name: '🕐 Restored At',    value: `<t:${Math.floor(now/1000)}:T>`, inline: true },
       )
-      .setFooter({ text: 'RCRP Staff Alert System — River City Role Play' })
+      .setFooter({ text: 'FSRP Staff Alert System — Florida State Roleplay' })
       .setTimestamp();
     await _sendAlert(staffCh || mdtCh, embed);
   }
@@ -82,14 +82,14 @@ async function pulse(snapshot) {
       milestonesFired.add(m);
       const embed = new EmbedBuilder()
         .setColor(m >= 100 ? 0x8B7536 : m >= 75 ? 0x9B59B6 : m >= 50 ? 0x1D6FA5 : 0x2D7D46)
-        .setAuthor({ name: '📊  RCRP ALERT SYSTEM  —  POPULATION MILESTONE' })
-        .setTitle(`${m >= 100 ? '🏆' : m >= 75 ? '🚀' : m >= 50 ? '🔥' : '📈'}  ${m} Players Online — River City!`)
-        .setDescription(`> The RCRP server just hit **${m} active players** — ${m >= 100 ? 'maximum capacity!' : 'consider announcing a session or event!'}`)
+        .setAuthor({ name: '📊  FSRP ALERT SYSTEM  —  POPULATION MILESTONE' })
+        .setTitle(`${m >= 100 ? '🏆' : m >= 75 ? '🚀' : m >= 50 ? '🔥' : '📈'}  ${m} Players Online — Florida State!`)
+        .setDescription(`> The FSRP server just hit **${m} active players** — ${m >= 100 ? 'maximum capacity!' : 'consider announcing a session or event!'}`)
         .addFields(
           { name: '👥 Current Count', value: String(playerCount), inline: true },
           { name: '🕐 Time',          value: `<t:${Math.floor(now/1000)}:T>`,  inline: true },
         )
-        .setFooter({ text: 'RCRP Staff Alert System — River City Role Play' })
+        .setFooter({ text: 'FSRP Staff Alert System — Florida State Roleplay' })
         .setTimestamp();
       await _sendAlert(staffCh || mdtCh, embed);
     }
@@ -113,7 +113,7 @@ async function pulse(snapshot) {
     const topKiller = Object.entries(killerMap).sort((a,b) => b[1]-a[1])[0];
     const embed = new EmbedBuilder()
       .setColor(0xED4245)
-      .setAuthor({ name: '🚨  RCRP ALERT SYSTEM  —  KILL SPIKE DETECTED' })
+      .setAuthor({ name: '🚨  FSRP ALERT SYSTEM  —  KILL SPIKE DETECTED' })
       .setTitle(`⚠️  Possible Mass RDM — ${fresh.length} Kills in 60 Seconds`)
       .setDescription('> An unusual number of kills was detected in the last 60 seconds.\n> **Staff action may be required in-game.**')
       .addFields(
@@ -121,7 +121,7 @@ async function pulse(snapshot) {
         { name: '👤 Top Suspect',       value: topKiller ? `${topKiller[0]} (${topKiller[1]} kills)` : 'N/A', inline: true },
         { name: '🕐 Detected At',       value: `<t:${Math.floor(now/1000)}:T>`,   inline: true },
       )
-      .setFooter({ text: 'RCRP Staff Alert System — River City Role Play' })
+      .setFooter({ text: 'FSRP Staff Alert System — Florida State Roleplay' })
       .setTimestamp();
     await _sendAlert(mdtCh || staffCh, embed);
   }
@@ -134,14 +134,14 @@ async function pulse(snapshot) {
       _staffAlertSystem._modSurgeTime = now;
       const embed = new EmbedBuilder()
         .setColor(0xC37D00)
-        .setAuthor({ name: '📢  RCRP ALERT SYSTEM  —  MOD CALL SURGE' })
+        .setAuthor({ name: '📢  FSRP ALERT SYSTEM  —  MOD CALL SURGE' })
         .setTitle(`🛑  ${modCalls.length} Active Mod Calls — Staff Needed In-Game`)
         .setDescription('> There are **' + modCalls.length + ' open mod calls** in the game right now.\n> Please send available game staff to handle them.')
         .addFields(
           { name: '📋 Open Calls', value: String(modCalls.length), inline: true },
           { name: '🕐 Time',       value: `<t:${Math.floor(now/1000)}:T>`, inline: true },
         )
-        .setFooter({ text: 'RCRP Staff Alert System — River City Role Play' })
+        .setFooter({ text: 'FSRP Staff Alert System — Florida State Roleplay' })
         .setTimestamp();
       await _sendAlert(mdtCh || staffCh, embed);
     }

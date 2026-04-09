@@ -27,12 +27,12 @@
         const embed = new EmbedBuilder()
           .setColor(config.colors.success)
           .setTitle('🟢 SESSION IS LIVE — ' + cd.label)
-          .setDescription('River City is **OPEN**. Get in game!')
-          .setFooter({ text: 'RCRP Session System' }).setTimestamp();
+          .setDescription('Florida State is **OPEN**. Get in game!')
+          .setFooter({ text: 'FSRP Session System' }).setTimestamp();
         await msg.edit({ embeds: [embed], components: [] }).catch(() => {});
         // Fire session ping
         const annCh = client.channels.cache.get(config.channels.sessionAnnouncements);
-        if (annCh) await annCh.send({ content: '<@&' + config.roles.sessionPing + '> — Session is now LIVE! Join River City now.', embeds: [embed] }).catch(() => {});
+        if (annCh) await annCh.send({ content: '<@&' + config.roles.sessionPing + '> — Session is now LIVE! Join Florida State now.', embeds: [embed] }).catch(() => {});
         countdowns.delete(msgId);
       } else {
         const mins = Math.floor(remaining / 60000);
@@ -46,9 +46,9 @@
     return new EmbedBuilder()
       .setColor(config.colors.warning)
       .setTitle('⏳ SESSION COUNTDOWN — ' + label)
-      .setDescription('**' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + '** until River City opens!')
+      .setDescription('**' + String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0') + '** until Florida State opens!')
       .addFields({ name: '⏰ Opens At', value: '<t:' + Math.floor(endsAt/1000) + ':T>', inline: true })
-      .setFooter({ text: 'RCRP Session System — Stay tuned!' }).setTimestamp();
+      .setFooter({ text: 'FSRP Session System — Stay tuned!' }).setTimestamp();
   }
 
   function parseDuration(str) {
@@ -204,7 +204,7 @@
             { name: '🕐 Time',         value: '<t:' + Math.floor(Date.now()/1000) + ':T>', inline: true },
             { name: '👮 Issued By',    value: interaction.member.displayName, inline: true },
           )
-          .setFooter({ text: 'RCRP MDT — Structured Callout System' }).setTimestamp();
+          .setFooter({ text: 'FSRP MDT — Structured Callout System' }).setTimestamp();
 
         await mdtCh.send({ content: '@here — Callout incoming!', embeds: [embed] });
         return interaction.editReply({ content: 'Callout posted to <#' + mdtCh.id + '>!' });
@@ -259,7 +259,7 @@
               data.sessions.length + ' session' + (data.sessions.length !== 1 ? 's' : '') + '**'
             )
             .setThumbnail(dcMember.displayAvatarURL({ dynamic: true }))
-            .setFooter({ text: 'RCRP Staff Sessions  ·  Persistent DB  ·  Newest first' })
+            .setFooter({ text: 'FSRP Staff Sessions  ·  Persistent DB  ·  Newest first' })
             .setTimestamp();
 
           const dateEntries = [...byDate.entries()]
@@ -369,7 +369,7 @@
             ...(duration ? [{ name: '⏱️ Duration', value: duration, inline: true }] : []),
             { name: '📊 Total Actions', value: 'This is **action #' + (prevCount + 1) + '** for this player.', inline: false },
           )
-          .setFooter({ text: 'RCRP Staff Log System  •  Action ID: ' + Date.now() })
+          .setFooter({ text: 'FSRP Staff Log System  •  Action ID: ' + Date.now() })
           .setTimestamp();
 
         // Post to the channel where the command was run (visible to everyone in that channel)
@@ -404,7 +404,7 @@
                 .setColor(config.colors.success)
                 .setTitle('🔍 Player Search — ' + username)
                 .setDescription('✅ **No actions found.** This player has a clean record.')
-                .setFooter({ text: 'RCRP Staff Log System' })
+                .setFooter({ text: 'FSRP Staff Log System' })
                 .setTimestamp(),
             ],
           });
@@ -455,7 +455,7 @@
               '**Total Actions:** ' + total + '\n' +
               '**Breakdown:** ' + tallyStr
             )
-            .setFooter({ text: 'RCRP Staff Log System  •  Page ' + (p+1) + ' of ' + pageCount })
+            .setFooter({ text: 'FSRP Staff Log System  •  Page ' + (p+1) + ' of ' + pageCount })
             .setTimestamp();
 
           for (const entry of slice) {

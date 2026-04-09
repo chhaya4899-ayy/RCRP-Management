@@ -1,4 +1,4 @@
-// /rcrp — Owner-only bot management & unified setup
+// /fsrp — Owner-only bot management & unified setup
   const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
   const config       = require('../config');
   const perms        = require('../utils/permissions');
@@ -11,8 +11,8 @@
 
   module.exports = {
     data: new SlashCommandBuilder()
-      .setName('rcrp')
-      .setDescription('RCRP Management bot commands (Owner/Management only).')
+      .setName('fsrp')
+      .setDescription('FSRP Management bot commands (Owner/Management only).')
       .addSubcommand(sub => sub
         .setName('index')
         .setDescription('Force re-index all rules channels to update AI knowledge.')
@@ -60,7 +60,7 @@
         const playerCount = snapshot?.players?.length ?? 'N/A';
         const embed = new EmbedBuilder()
           .setColor(config.colors.primary)
-          .setTitle('RCRP Management System Status')
+          .setTitle('FSRP Management System Status')
           .addFields(
             { name: '🟢 Bot Status',        value: 'Online',                                   inline: true },
             { name: '📡 ERLC Cache Age',    value: cacheAge >= 0 ? (cacheAge + 's ago') : 'N/A', inline: true },
@@ -71,7 +71,7 @@
             { name: '🚗 Vehicles In-Game',  value: String(snapshot?.vehicles?.length ?? 0),     inline: true },
             { name: '⚙️ Architecture',      value: 'Discord-as-Database (zero-persistence)',    inline: false },
           )
-          .setFooter({ text: 'RCRP Management — River City Role Play' })
+          .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
           .setTimestamp();
         return interaction.editReply({ embeds: [embed] });
       }

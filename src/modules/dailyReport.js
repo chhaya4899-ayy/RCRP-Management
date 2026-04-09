@@ -70,8 +70,8 @@ async function postDailyReport() {
 
   const embed = new EmbedBuilder()
     .setColor(config.colors.gold)
-    .setTitle('📊  Daily City Report — River City')
-    .setDescription(`Here's what happened in River City on **${_stats.dayStart}**`)
+    .setTitle('📊  Daily City Report — Florida State')
+    .setDescription(`Here's what happened in Florida State on **${_stats.dayStart}**`)
     .addFields(
       { name: '👥 Unique Players', value: String(_stats.totalPlayers),              inline: true },
       { name: '📈 Peak Players',   value: `${_stats.peakPlayers} at ${_stats.peakTime || 'N/A'}`, inline: true },
@@ -80,7 +80,7 @@ async function postDailyReport() {
       { name: '🏆 Most Active Team', value: topTeam ? `${topTeam[0]} (${topTeam[1]} appearances)` : 'N/A', inline: true },
       { name: '📅 Report Date',    value: _stats.dayStart,                           inline: true },
     )
-    .setFooter({ text: 'RCRP Daily Report — Auto-generated at midnight' })
+    .setFooter({ text: 'FSRP Daily Report — Auto-generated at midnight' })
     .setTimestamp();
 
   await ch.send({ content: '<@&' + (config.roles.staffSupervisor || '') + '> Daily city report is in.', embeds: [embed] }).catch(() =>

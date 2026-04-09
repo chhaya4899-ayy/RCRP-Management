@@ -124,7 +124,7 @@ async function writeGameSnapshot(channel, data) {
     _meta: { fileId: id, timestamp: now.toISOString(), source: 'ERLC API Heartbeat' },
     ...data,
   };
-  return writeFile(channel, payload, filename, `\`${filename}\` — RCRP Game Snapshot`);
+  return writeFile(channel, payload, filename, `\`${filename}\` — FSRP Game Snapshot`);
 }
 
 // ── Verify Database ───────────────────────────────────────
@@ -166,7 +166,7 @@ async function saveBrainFile(channel, brain) {
   brain._meta.version   = (brain._meta.version || 0) + 1;
   const buffer     = Buffer.from(JSON.stringify(brain, null, 2), 'utf-8');
   const attachment = new AttachmentBuilder(buffer, { name: 'server-brain.json' });
-  return channel.send({ content: '`server-brain.json` — RCRP Server Brain', files: [attachment] });
+  return channel.send({ content: '`server-brain.json` — FSRP Server Brain', files: [attachment] });
 }
 
 // ── Discord Database — Server Snapshots ───────────────────
@@ -185,7 +185,7 @@ async function flushDiscordDb(channel) {
   try {
     const now     = new Date();
     const payload = {
-      _meta: { timestamp: now.toISOString(), source: 'RCRP Discord DB' },
+      _meta: { timestamp: now.toISOString(), source: 'FSRP Discord DB' },
       ..._discordDbState.currentData,
     };
     const fname = `discord-db-${now.toISOString().slice(0,16).replace('T','-').replace(':','')}.json`;

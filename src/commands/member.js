@@ -55,7 +55,7 @@ module.exports = {
 
     .addSubcommand(s => s
       .setName('where')
-      .setDescription('Find where a specific player currently is in River City.')
+      .setDescription('Find where a specific player currently is in Florida State.')
       .addStringOption(o => o.setName('username').setDescription('Roblox username').setRequired(true))
     )
     .addSubcommand(s => s
@@ -64,7 +64,7 @@ module.exports = {
     )
     .addSubcommand(s => s
       .setName('mystats')
-      .setDescription('Your personal RCRP history — sessions, total time, vouches and more.')
+      .setDescription('Your personal FSRP history — sessions, total time, vouches and more.')
     )
     .addSubcommand(s => s
       .setName('scenario')
@@ -102,7 +102,7 @@ module.exports = {
       if (!snapshot) return interaction.editReply({ content: '❌ ERLC data not available right now. Try again shortly.' });
 
       const player = erlc.findPlayerByName(username);
-      if (!player) return interaction.editReply({ content: `**${username}** is not in River City right now. (Data: ${erlc.getCacheAge()}s old)` });
+      if (!player) return interaction.editReply({ content: `**${username}** is not in Florida State right now. (Data: ${erlc.getCacheAge()}s old)` });
 
       const embed = new EmbedBuilder()
         .setColor(config.colors.primary)
@@ -115,7 +115,7 @@ module.exports = {
           { name: '🆔 Roblox ID',  value: '`' + player._userId + '`',       inline: true },
           { name: '⏱️ Data Age',   value: erlc.getCacheAge() + 's old',      inline: true },
         )
-        .setFooter({ text: 'RCRP — Live ERLC Data' })
+        .setFooter({ text: 'FSRP — Live ERLC Data' })
         .setTimestamp();
 
       return interaction.editReply({ embeds: [embed] });
@@ -133,7 +133,7 @@ module.exports = {
       if (!me) return interaction.editReply({ content: 'You are not verified with a Roblox account.' });
 
       const player = erlc.findPlayerById(me.robloxId);
-      if (!player) return interaction.editReply({ content: `**${me.robloxUsername}** is not currently in River City.` });
+      if (!player) return interaction.editReply({ content: `**${me.robloxUsername}** is not currently in Florida State.` });
       if (!player._vehicle) return interaction.editReply({ content: `You're on foot right now, **${player._username}**. Hop in something.` });
 
       let aiLine = 'One smooth driver right there.';
@@ -150,7 +150,7 @@ module.exports = {
           { name: '👥 Team',      value: player._team || 'Unknown', inline: true },
           { name: '🏷️ Callsign', value: player._callsign || 'None', inline: true },
         )
-        .setFooter({ text: 'RCRP — Live ERLC Data' })
+        .setFooter({ text: 'FSRP — Live ERLC Data' })
         .setTimestamp();
 
       return interaction.editReply({ embeds: [embed] });
@@ -177,9 +177,9 @@ module.exports = {
 
       const embed = new EmbedBuilder()
         .setColor(config.colors.gold)
-        .setTitle('📊  ' + me.robloxUsername + ' — RCRP Stats')
+        .setTitle('📊  ' + me.robloxUsername + ' — FSRP Stats')
         .setDescription(player
-          ? '🟢 **Currently in River City** — ' + (player._team || 'Unknown') + ' team'
+          ? '🟢 **Currently in Florida State** — ' + (player._team || 'Unknown') + ' team'
           : '⭕ Not currently in-game')
         .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
         .addFields(
@@ -190,7 +190,7 @@ module.exports = {
           { name: '🏆 Vouches',       value: String(myVouches.length),                                              inline: true },
           { name: '✅ Verified',      value: '<t:' + Math.floor(new Date(me.verifiedAt || Date.now()).getTime() / 1000) + ':D>', inline: true },
         )
-        .setFooter({ text: 'RCRP Member Stats — Powered by live snapshots' })
+        .setFooter({ text: 'FSRP Member Stats — Powered by live snapshots' })
         .setTimestamp();
 
       if (sessions.length > 0) {
@@ -216,7 +216,7 @@ module.exports = {
         .setColor(config.colors.warning)
         .setTitle('🎲  Random RP Scenario')
         .setDescription('**' + SCENARIOS[idx] + '**')
-        .setFooter({ text: 'Scenario ' + (idx + 1) + ' of ' + SCENARIOS.length + '  ·  RCRP RP Tools — click to reroll' })
+        .setFooter({ text: 'Scenario ' + (idx + 1) + ' of ' + SCENARIOS.length + '  ·  FSRP RP Tools — click to reroll' })
         .setTimestamp();
 
       const row = new ActionRowBuilder().addComponents(
@@ -257,7 +257,7 @@ module.exports = {
           { name: '👤 Recipient',    value: '<@' + target.id + '>', inline: true },
         )
         .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-        .setFooter({ text: 'RCRP Community Rep System' })
+        .setFooter({ text: 'FSRP Community Rep System' })
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });
@@ -272,12 +272,12 @@ module.exports = {
               .setColor(config.colors.gold)
               .setTitle('🏆  ' + milestone + ' — ' + target.displayName)
               .setDescription(
-                '<@' + target.id + '> has reached **' + total + ' community vouches** in River City Role Play!\n\n' +
+                '<@' + target.id + '> has reached **' + total + ' community vouches** in Florida State Roleplay!\n\n' +
                 'Latest from **' + interaction.member.displayName + '**: *"' + note + '"*\n\n' +
                 'Proof that great RP gets noticed. 🎉'
               )
               .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-              .setFooter({ text: 'RCRP Community Rep' })
+              .setFooter({ text: 'FSRP Community Rep' })
               .setTimestamp()]
           }).catch(() => {});
         }
@@ -297,7 +297,7 @@ module.exports = {
           ? '*No vouches yet. Play well and they will come.*'
           : '**' + list.length + ' vouch' + (list.length !== 1 ? 'es' : '') + '** received')
         .setThumbnail(target.displayAvatarURL({ dynamic: true }))
-        .setFooter({ text: 'RCRP Community Rep System' })
+        .setFooter({ text: 'FSRP Community Rep System' })
         .setTimestamp();
 
       if (list.length) {

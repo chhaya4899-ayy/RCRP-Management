@@ -58,7 +58,7 @@ module.exports = {
       await target.roles.add(role);
     } catch (err) {
       return interaction.editReply({
-        content: `❌ Failed to assign role: ${err.message}\nMake sure RCRP Management's role is above the target role.`,
+        content: `❌ Failed to assign role: ${err.message}\nMake sure FSRP Management's role is above the target role.`,
       });
     }
 
@@ -77,7 +77,7 @@ module.exports = {
       .setTitle('🎖️  STAFF PROMOTION')
       .setDescription(
         `**Congratulations, ${target}!**\n\n` +
-        `You have been promoted to **${role.name}** in River City Role Play.\n` +
+        `You have been promoted to **${role.name}** in Florida State Roleplay.\n` +
         (note ? `\n> ${note}` : '')
       )
       .addFields(
@@ -87,7 +87,7 @@ module.exports = {
         { name: '👑 Promoted By',  value: interaction.user.toString(),      inline: true },
         { name: '📅 Date',         value: `<t:${Math.floor(Date.now()/1000)}:F>`, inline: true },
       )
-      .setFooter({ text: 'RCRP Management • River City Role Play — Staff Management' })
+      .setFooter({ text: 'FSRP Management • Florida State Roleplay — Staff Management' })
       .setTimestamp();
 
     if (image) {

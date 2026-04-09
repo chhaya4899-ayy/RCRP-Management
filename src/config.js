@@ -1,4 +1,4 @@
-// config.js — RCRP Management Bot Configuration
+// config.js — FSRP Management Bot Configuration
 
   module.exports = {
     heartbeatInterval: 20_000,
@@ -147,7 +147,7 @@
       ].filter(Boolean);
     },
 
-    // ERLC River City coordinate bounds (game world studs)
+    // ERLC Florida State coordinate bounds (game world studs)
     // Used by mapPinner to convert LocationX/LocationZ → image pixels
     mapCoords: {
       minX: -3500,
@@ -156,10 +156,10 @@
       maxZ:  3500,
     },
 
-    // URL of the ERLC River City top-down map image
+    // URL of the ERLC Florida State top-down map image
     // Replace with a direct PNG link to your preferred map image
     // The bot will download, cache, and overlay red dots on it
-    // Set this to a direct PNG/JPG link to your ERLC River City map image.
+    // Set this to a direct PNG/JPG link to your ERLC Florida State map image.
     // Leave empty (\'\') to auto-generate a clean schematic map (works without any external URL).
     mapImageUrl: '',
 
@@ -182,15 +182,15 @@
 
     applicationCategories: [
       { id: 'gamestaff', label: 'Game Staff Team',    emoji: '🎮', description: 'Moderate and manage in-game as part of the Game Staff Team.' },
-      { id: 'mod',       label: 'Discord Moderator',  emoji: '🛡️', description: 'Moderate the River City Role Play Discord server.' },
-      { id: 'media',     label: 'Media Team',         emoji: '📸', description: 'Create content, clips, and graphics for RCRP.' },
-      { id: 'whitelist', label: 'Server Whitelist',   emoji: '✅', description: 'Apply for whitelist access to River City Role Play private servers.' },
+      { id: 'mod',       label: 'Discord Moderator',  emoji: '🛡️', description: 'Moderate the Florida State Roleplay Discord server.' },
+      { id: 'media',     label: 'Media Team',         emoji: '📸', description: 'Create content, clips, and graphics for FSRP.' },
+      { id: 'whitelist', label: 'Server Whitelist',   emoji: '✅', description: 'Apply for whitelist access to Florida State Roleplay private servers.' },
     ],
 
     applicationQuestions: {
       gamestaff: [
         { id: 'q1',  label: 'Tell us about yourself and your experience in Roblox roleplay.' },
-        { id: 'q2',  label: 'Why do you want to join the Game Staff Team at RCRP?' },
+        { id: 'q2',  label: 'Why do you want to join the Game Staff Team at FSRP?' },
         { id: 'q3',  label: 'What does "Game Staff Team" mean to you? How is it different from Discord moderation?' },
         { id: 'q4',  label: 'How many hours per week can you commit to being in-game and on duty?' },
         { id: 'q5',  label: 'Describe a situation where you handled a difficult player or conflict.' },
@@ -207,7 +207,7 @@
       ],
       mod: [
         { id: 'q1',  label: 'Tell us about yourself and your Discord moderation experience.' },
-        { id: 'q2',  label: 'Why do you want to be a Discord Moderator for RCRP?' },
+        { id: 'q2',  label: 'Why do you want to be a Discord Moderator for FSRP?' },
         { id: 'q3',  label: 'How is Discord moderation different from game moderation?' },
         { id: 'q4',  label: 'How many hours per week can you actively be on Discord?' },
         { id: 'q5',  label: 'A member posts slurs in general chat. What do you do?' },
@@ -224,36 +224,36 @@
       ],
       media: [
         { id: 'q1',  label: 'Tell us about yourself and your content creation experience.' },
-        { id: 'q2',  label: 'Why do you want to join the RCRP Media Team?' },
-        { id: 'q3',  label: 'What kind of content would you create for RCRP?' },
+        { id: 'q2',  label: 'Why do you want to join the FSRP Media Team?' },
+        { id: 'q3',  label: 'What kind of content would you create for FSRP?' },
         { id: 'q4',  label: 'What software do you use to create and edit content?' },
         { id: 'q5',  label: 'How many hours per week can you dedicate to creating content?' },
         { id: 'q6',  label: 'Share a link to any previous work you have created (optional).' },
         { id: 'q7',  label: 'How do you handle criticism of your creative work?' },
-        { id: 'q8',  label: 'What makes RCRP content unique compared to other RP servers?' },
-        { id: 'q9',  label: 'How would you promote RCRP to grow the community?' },
+        { id: 'q8',  label: 'What makes FSRP content unique compared to other RP servers?' },
+        { id: 'q9',  label: 'How would you promote FSRP to grow the community?' },
         { id: 'q10', label: 'Describe your turnaround time for a 60-second clip from raw footage.' },
         { id: 'q11', label: 'What is your availability — days and hours you are most active?' },
         { id: 'q12', label: 'Have you worked on a media team before? Describe your role.' },
-        { id: 'q13', label: 'What is your creative vision for the RCRP brand online?' },
+        { id: 'q13', label: 'What is your creative vision for the FSRP brand online?' },
         { id: 'q14', label: 'Any questions for the team?' },
         { id: 'q15', label: 'Type "I AGREE" to confirm all your answers are honest and your own.' },
       ],
       whitelist: [
         { id: 'q1',  label: 'What is your Roblox username and how long have you played ERLC?' },
-        { id: 'q2',  label: 'How did you find out about River City Role Play?' },
+        { id: 'q2',  label: 'How did you find out about Florida State Roleplay?' },
         { id: 'q3',  label: 'What type of roleplay do you enjoy most in ERLC (LEO, Fire/EMS, civilian, criminal, etc.)?' },
         { id: 'q4',  label: 'Have you been whitelisted or staff in any other ERLC server? If so, which ones?' },
-        { id: 'q5',  label: 'Why do you want to join River City Role Play specifically?' },
+        { id: 'q5',  label: 'Why do you want to join Florida State Roleplay specifically?' },
         { id: 'q6',  label: 'Describe what realistic roleplay means to you and how you apply it.' },
         { id: 'q7',  label: 'A fellow player breaks a major RP rule. What do you do?' },
         { id: 'q8',  label: 'How do you handle situations where roleplay becomes heated or personal?' },
         { id: 'q9',  label: 'What is FailRP and can you give an example of it?' },
-        { id: 'q10', label: 'How often are you able to be active in the RCRP server each week?' },
+        { id: 'q10', label: 'How often are you able to be active in the FSRP server each week?' },
         { id: 'q11', label: 'Have you ever been banned from an ERLC server? Be honest — explain if so.' },
-        { id: 'q12', label: 'What do you bring to the River City Role Play community?' },
+        { id: 'q12', label: 'What do you bring to the Florida State Roleplay community?' },
         { id: 'q13', label: 'Describe a memorable roleplay scenario you have been a part of.' },
-        { id: 'q14', label: 'Do you have any questions for the RCRP team?' },
+        { id: 'q14', label: 'Do you have any questions for the FSRP team?' },
         { id: 'q15', label: 'Type "I AGREE" to confirm all your answers are truthful and your own.' },
       ],
     },

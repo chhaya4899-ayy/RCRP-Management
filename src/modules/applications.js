@@ -5,7 +5,7 @@
 const {
   EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle,
   ModalBuilder, TextInputBuilder, TextInputStyle,
-  ChannelType, PermissionFlagsBits,
+  ChannelType, PermissionFlagsBits, OverwriteType,
 } = require('discord.js');
 const config = require('../config');
 const db     = require('../utils/discordDb');
@@ -99,11 +99,11 @@ async function handleCategorySelect(interaction) {
     const botId        = guild.client.user.id;
 
     const overwrites = [
-      { id: everyoneRole.id, deny: [PermissionFlagsBits.ViewChannel] },
-      { id: member.id,       allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
-      { id: botId,           allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages] },
+      { id: everyoneRole.id, type: OverwriteType.Role,   deny:  [PermissionFlagsBits.ViewChannel] },
+      { id: member.id,       type: OverwriteType.Member, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
+      { id: botId,           type: OverwriteType.Member, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages] },
     ];
-    if (hrRoleId) overwrites.push({ id: hrRoleId, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
+    if (hrRoleId) overwrites.push({ id: hrRoleId, type: OverwriteType.Role, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
 
     // Try to put it in same category as staff-applications channel
     const parentCh = guild.channels.cache.get(config.channels.staffApplications);

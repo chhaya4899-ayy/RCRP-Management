@@ -39,6 +39,17 @@ module.exports = {
 
     erlc.testConnection().catch(() => {});
 
+    // ── Verify database channel access (diagnose brain file issues) ──────────
+    const dbChannel = guild.channels.cache.get(config.channels.discordDatabase);
+    if (!dbChannel) {
+      console.error('[Ready] ❌ DISCORD DATABASE CHANNEL NOT FOUND:', config.channels.discordDatabase, '— bot cannot save brain file. Check channel ID and bot permissions.');
+    } else {
+      console.log('[Ready] ✅ Discord DB channel found:', '#' + dbChannel.name);
+      await dbChannel.send('🟢 **FSRP Management online** — brain scan starts in 12s. Brain file will appear below.').catch(e => {
+        console.error('[Ready] ❌ Cannot write to Discord DB channel:', e.message, '— check SEND_MESSAGES and ATTACH_FILES permissions.');
+      });
+    }
+
     // Post verification panel
     const verifyCh = guild.channels.cache.find(c => c.isTextBased() && /^verify(?!.*(?:database|db))/i.test(c.name));
     if (verifyCh) await verification.postVerifyPanel(verifyCh).catch(e => console.warn('[Ready] Verify panel:', e.message));

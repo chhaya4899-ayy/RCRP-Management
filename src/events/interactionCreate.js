@@ -5,6 +5,7 @@ const applications = require('../modules/applications');
 const loa          = require('../commands/loa');
 const roleSystem   = require('../commands/roleSystem');
 const dutySignup   = require('../modules/dutySignup');
+const review       = require('../commands/review');
 
 module.exports = {
   name: 'interactionCreate',
@@ -35,7 +36,7 @@ module.exports = {
       if (id === 'verify_button') return verification.handleVerifyButton(interaction);
 
       // Applications
-      if (id === 'apply_button')           return applications.handleApplyButton(interaction);
+      if (id === 'apply_button')          return applications.handleApplyButton(interaction);
       if (id.startsWith('app_category:')) return applications.handleCategorySelect(interaction);
       if (id.startsWith('app_approve:'))  return applications.handleHRDecision(interaction, 'approve');
       if (id.startsWith('app_deny:'))     return applications.handleHRDecision(interaction, 'deny');
@@ -78,8 +79,11 @@ module.exports = {
         return interaction.update({ embeds: [embed], components: [row] });
       }
 
-      // Review panel
-      if (id === 'leave_review') return handleLeaveReview(interaction);
+      // Review panel buttons
+      if (id.startsWith('review_panel:')) return review.handleReviewPanelButton(interaction);
+
+      // Legacy review button (backward compat)
+      if (id === 'leave_review') return review.handleReviewPanelButton({ ...interaction, customId: 'review_panel:submit' });
 
       return;
     }
@@ -96,55 +100,8 @@ module.exports = {
       const id = interaction.customId;
       if (id === 'verify_roblox_modal')      return verification.handleVerifyModal(interaction);
       if (id.startsWith('app_deny_modal:')) return applications.handleDenyModal(interaction);
-      if (id.startsWith('review_modal:'))   return handleReviewModal(interaction);
+      if (id.startsWith('review_modal:'))   return review.handleReviewModal(interaction);
       return;
     }
   },
 };
-
-// ── Review button handler ────────────────────────────────────
-async function handleLeaveReview(interaction) {
-  const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
-  const modal = new ModalBuilder().setCustomId('review_modal:' + interaction.user.id).setTitle('Leave a Staff Review');
-  modal.addComponents(
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId('staff_name').setLabel('Staff Member Name').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('e.g. ExampleStaff123')
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId('rating').setLabel('Star Rating (1-5)').setStyle(TextInputStyle.Short).setRequired(true).setPlaceholder('Enter a number from 1 to 5')
-    ),
-    new ActionRowBuilder().addComponents(
-      new TextInputBuilder().setCustomId('review_text').setLabel('Your Review').setStyle(TextInputStyle.Paragraph).setRequired(true).setPlaceholder('Describe your experience with this staff member...').setMinLength(10).setMaxLength(1000)
-    ),
-  );
-  await interaction.showModal(modal);
-}
-
-async function handleReviewModal(interaction) {
-  await interaction.deferReply({ ephemeral: true });
-  const config    = require('../config');
-  const { EmbedBuilder } = require('discord.js');
-  const staffName = interaction.fields.getTextInputValue('staff_name').trim();
-  const ratingRaw = interaction.fields.getTextInputValue('rating').trim();
-  const text      = interaction.fields.getTextInputValue('review_text').trim();
-  const rating    = Math.min(5, Math.max(1, parseInt(ratingRaw) || 3));
-  const stars     = '⭐'.repeat(rating) + '☆'.repeat(5 - rating);
-
-  const reviewCh = interaction.guild.channels.cache.get(config.channels.staffReview);
-  if (!reviewCh) return interaction.editReply({ content: 'Review channel not found.' });
-
-  const embed = new EmbedBuilder()
-    .setColor(config.colors.gold)
-    .setTitle('Staff Review — ' + staffName)
-    .setDescription('"' + text + '"')
-    .addFields(
-      { name: 'Rating',       value: stars + ' (' + rating + '/5)', inline: true },
-      { name: 'Reviewed By',  value: '<@' + interaction.user.id + '>', inline: true },
-      { name: 'Staff Member', value: staffName, inline: true },
-    )
-    .setFooter({ text: 'FSRP Staff Review System — Florida State Roleplay' })
-    .setTimestamp();
-
-  await reviewCh.send({ embeds: [embed] });
-  await interaction.editReply({ content: 'Your review has been submitted. Thank you!' });
-}

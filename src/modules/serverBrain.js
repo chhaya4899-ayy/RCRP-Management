@@ -11,6 +11,8 @@ const db     = require('../utils/discordDb');
 
 let _client     = null;
 let _running    = false;
+let _cachedBrain = null; // in-memory brain — updated after every scan, no Discord fetch needed
+
 // channelId → last seen message snowflake (for incremental scanning)
 const _lastSeen = new Map();
 
@@ -44,13 +46,48 @@ async function scan() {
     const skipIds = new Set(SKIP_IDS_BASE);
 
     // Load or create the brain
-    const brain = await _getBrainWithMsgId(dbCh);
+    const brain = _cachedBrain || await _getBrainWithMsgId(dbCh);
 
     // Ensure sub-objects exist
     if (!brain.facts)         brain.facts         = [];
     if (!brain.members)       brain.members       = {};
     if (!brain.channels)      brain.channels      = {};
     if (!brain.relationships) brain.relationships = {};
+    if (!brain.guildMembers)  brain.guildMembers  = {};
+
+    // ── Enrich brain.guildMembers from live Discord guild members ──────────────
+    // This gives the AI real knowledge of every member's roles, nickname, join date
+    try {
+      await guild.members.fetch(); // populates cache
+      for (const [, gm] of guild.members.cache) {
+        if (gm.user.bot) continue;
+        const topRole = [...gm.roles.cache.values()]
+          .filter(r => r.id !== guild.id)
+          .sort((a, b) => b.position - a.position)[0];
+
+        brain.guildMembers[gm.id] = {
+          id:          gm.id,
+          username:    gm.user.username,
+          displayName: gm.displayName,
+          topRole:     topRole?.name || 'Member',
+          roles:       [...gm.roles.cache.values()]
+                         .filter(r => r.id !== guild.id)
+                         .map(r => r.name)
+                         .slice(0, 10),
+          joinedAt:    gm.joinedAt?.toISOString() || null,
+          bot:         false,
+        };
+
+        // Sync with brain.members activity data
+        if (brain.members[gm.id]) {
+          brain.members[gm.id].displayName = gm.displayName;
+          brain.members[gm.id].topRole     = topRole?.name || 'Member';
+          brain.members[gm.id].roles       = brain.guildMembers[gm.id].roles;
+        }
+      }
+    } catch (e) {
+      console.warn('[ServerBrain] guild.members.fetch warning:', e.message);
+    }
 
     // Scan EVERY text channel the bot can see — including locked ones
     // (bot has admin/read-all, so it can read channels regular users can't)
@@ -62,7 +99,7 @@ async function scan() {
 
     for (const ch of channels) {
       try {
-        const opts = { limit: 50 };
+        const opts   = { limit: 50 };
         const lastId = _lastSeen.get(ch.id);
         if (lastId) opts.after = lastId;
 
@@ -99,11 +136,11 @@ async function scan() {
               channels: [], knownAs: [], facts: [],
             };
           }
-          const member = brain.members[authorId];
-          member.username = authorTag;
-          member.messageCount++;
-          member.lastSeen = msg.createdAt.toISOString();
-          if (!member.channels.includes(ch.name)) member.channels.push(ch.name);
+          const memberEntry = brain.members[authorId];
+          memberEntry.username = authorTag;
+          memberEntry.messageCount++;
+          memberEntry.lastSeen = msg.createdAt.toISOString();
+          if (!memberEntry.channels.includes(ch.name)) memberEntry.channels.push(ch.name);
           activeUsersSet.add(authorTag);
           chEntry.messageCount++;
 
@@ -120,9 +157,12 @@ async function scan() {
     // Prune to keep brain manageable
     if (brain.facts.length > 800) brain.facts = brain.facts.slice(-800);
 
+    // Update in-memory cache BEFORE saving
+    _cachedBrain = brain;
+
     // Save — edit existing message if we know the ID, otherwise post new
     await _saveBrainEditing(dbCh, brain);
-    console.log(`[ServerBrain] Scanned ${channels.length} channels, ${totalNewMessages} new messages.`);
+    console.log(`[ServerBrain] ✅ Scanned ${channels.length} channels, ${totalNewMessages} new msgs, ${Object.keys(brain.guildMembers).length} members tracked.`);
   } catch (err) {
     console.error('[ServerBrain] scan error:', err.message);
   }
@@ -169,7 +209,7 @@ async function _getBrainWithMsgId(dbCh) {
     console.error('[ServerBrain] _getBrainWithMsgId error:', err.message);
   }
   // Fresh brain
-  return { _meta: { version: 0 }, facts: [], members: {}, channels: {}, relationships: {} };
+  return { _meta: { version: 0 }, facts: [], members: {}, channels: {}, relationships: {}, guildMembers: {} };
 }
 
 // ── Save brain — edit existing message or post new ────────
@@ -284,7 +324,7 @@ async function learnFromMessage(msg) {
     const dbCh = _client.channels.cache.get(config.channels.discordDatabase);
     if (!dbCh) return;
 
-    const brain = await _getBrainWithMsgId(dbCh);
+    const brain = _cachedBrain || await _getBrainWithMsgId(dbCh);
     if (!brain.facts)         brain.facts         = [];
     if (!brain.members)       brain.members       = {};
     if (!brain.relationships) brain.relationships = {};
@@ -298,18 +338,51 @@ async function learnFromMessage(msg) {
       brain.members[authorId] = { id: authorId, username: authorTag, messageCount: 0, lastSeen: null, channels: [], facts: [] };
     }
     brain.members[authorId].lastSeen = new Date().toISOString();
+    if (msg.member?.displayName) brain.members[authorId].displayName = msg.member.displayName;
 
     extractFacts(brain, msg, content, authorId, authorTag, chName);
 
     if (brain.facts.length > 800) brain.facts = brain.facts.slice(-800);
+    _cachedBrain = brain;
     await _saveBrainEditing(dbCh, brain);
   } catch (err) {
     console.error('[ServerBrain] learnFromMessage error:', err.message);
   }
 }
 
+// ── getCachedBrain — instant in-memory access, no Discord fetch ──────────────
+function getCachedBrain() {
+  return _cachedBrain;
+}
+
+// ── getMemberByUsername — search brain for a member by username/displayName ──
+function getMemberByUsername(name) {
+  if (!_cachedBrain) return null;
+  const lower = name.toLowerCase();
+
+  // Check guildMembers first (most up to date)
+  for (const gm of Object.values(_cachedBrain.guildMembers || {})) {
+    if (
+      gm.username?.toLowerCase()    === lower ||
+      gm.displayName?.toLowerCase() === lower ||
+      gm.username?.toLowerCase().includes(lower)
+    ) return { ...gm, activity: _cachedBrain.members?.[gm.id] || null };
+  }
+
+  // Fall back to members tracked by message scanning
+  for (const m of Object.values(_cachedBrain.members || {})) {
+    if (
+      m.username?.toLowerCase()    === lower ||
+      m.displayName?.toLowerCase() === lower ||
+      m.username?.toLowerCase().includes(lower)
+    ) return m;
+  }
+  return null;
+}
+
 // ── Query brain (used by mentionHandler for smart replies) ──
 async function queryBrain(query) {
+  if (_cachedBrain) return _cachedBrain;
   try {
     const dbCh = _client.channels.cache.get(config.channels.discordDatabase);
     if (!dbCh) return null;
@@ -317,4 +390,4 @@ async function queryBrain(query) {
   } catch { return null; }
 }
 
-module.exports = { init, learnFromMessage, queryBrain, scan };
+module.exports = { init, learnFromMessage, queryBrain, getCachedBrain, getMemberByUsername, scan };

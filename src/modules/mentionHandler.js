@@ -1,54 +1,78 @@
 // mentionHandler.js — @FSRP Management AI responder
-// Uses server brain (live member data) + channel index for context-aware answers.
-// Detects @mentions and username lookups — gives personal, member-specific answers.
-
+// Resolves <#channelId> mentions with LIVE message fetching.
+// Member-aware, conversation-memory, non-blocking, no duplicate scans.
 'use strict';
 
 const config      = require('../config');
 const db          = require('../utils/discordDb');
 const ai          = require('../utils/ai');
-const dbScanner   = require('./dbScanner');
-const serverBrain = require('./serverBrain');
+const brain       = require('./serverBrain');
 
+// ── Conversation memory: userId → last 3 exchanges ───────────────────────────
+const _convo = new Map();
+
+// ── Main handler ─────────────────────────────────────────────────────────────
 async function handleMention(message) {
   if (message.author.bot || !message.guild) return;
 
-  const question = message.content.replace(/<@!?\d+>/g, '').trim();
-  if (!question) {
+  const rawContent = message.content.replace(/<@!?\d+>/g, '').trim();
+
+  if (!rawContent) {
     return message.reply(
-      'Ask me anything — rules, member info, who\'s been active, applications, game history, anything. I scan the whole server every 2 minutes.'
+      'Ask me anything — what\'s in a channel, about a member, server rules, game history, anything. I scan the whole server every 2 minutes.'
     );
   }
 
-  await message.channel.sendTyping();
+  // Fire typing indicator immediately (non-blocking)
+  message.channel.sendTyping().catch(() => {});
 
   try {
-    // ── 1. Ensure channel index is fresh ──────────────────────────────────────
-    await dbScanner.ensureIndexed();
-    const serverContext = dbScanner.getContextForQuery(question);
+    // ── 1. Detect <#channelId> mentions — LIVE fetch those channels ───────────
+    const { cleanQuestion, channelSnippet } = await resolveChannelMentions(rawContent, message.guild);
 
-    // ── 2. Build member context from server brain ─────────────────────────────
-    const memberContext = buildMemberContext(message, question);
+    // ── 2. Channel index context (instant — cached, no blocking) ─────────────
+    const serverContext = brain.getContextForQuery(cleanQuestion);
 
-    // ── 3. Get asking user's game history ────────────────────────────────────
+    // Priority: live channel content first, then general index
+    const fullContext = channelSnippet
+      ? `=== REQUESTED CHANNEL — live content (latest messages, newest last) ===\n${channelSnippet}\n\n=== GENERAL SERVER KNOWLEDGE ===\n${serverContext}`
+      : serverContext;
+
+    // ── 3. Member context from brain cache ────────────────────────────────────
+    const memberContext = buildMemberContext(message, cleanQuestion);
+
+    // ── 4. Conversation memory (last 3 exchanges for context) ─────────────────
+    const prevConvo = _convo.get(message.author.id) || [];
+    const convoBlock = prevConvo.length
+      ? prevConvo.map((x, i) => `[Q${i + 1}]: ${x.q}\n[A${i + 1}]: ${x.a}`).join('\n\n')
+      : null;
+
+    const richMemberContext = convoBlock
+      ? `${memberContext}\n\n=== CONVERSATION HISTORY (this session) ===\n${convoBlock}`
+      : memberContext;
+
+    // ── 5. User game history ──────────────────────────────────────────────────
     const userHistory = await getUserHistory(message.member, message.guild);
 
-    // ── 4. Ask AI ─────────────────────────────────────────────────────────────
+    // ── 6. Ask AI ─────────────────────────────────────────────────────────────
     const answer = await ai.answerQuestion(
-      question,
-      serverContext,
-      memberContext,
+      cleanQuestion,
+      fullContext,
+      richMemberContext,
       userHistory,
       message.member.displayName
     );
 
-    const reply = answer || "I couldn't find enough info on that. Ask a staff member!";
+    const reply = answer || "I couldn't find enough info on that. Ping a staff member!";
 
-    // ── 5. Send (split if over Discord limit) ─────────────────────────────────
+    // ── 7. Update conversation memory ─────────────────────────────────────────
+    const updated = [...prevConvo, { q: cleanQuestion.slice(0, 200), a: reply.slice(0, 500) }].slice(-3);
+    _convo.set(message.author.id, updated);
+
+    // ── 8. Send (auto-split if over 2000 chars) ───────────────────────────────
     if (reply.length <= 1990) {
       return message.reply({ content: reply, allowedMentions: { repliedUser: true } });
     }
-
     const chunks = splitText(reply, 1990);
     for (let i = 0; i < chunks.length; i++) {
       if (i === 0) await message.reply({ content: chunks[i], allowedMentions: { repliedUser: true } });
@@ -61,131 +85,169 @@ async function handleMention(message) {
   }
 }
 
-// ── Build member context for the AI ──────────────────────────────────────────
-// Includes:
-//   • Profile of any @mentioned members in the question
-//   • Profile if someone asks "who is username" / "tell me about username"
-//   • Summary of the most active members as background knowledge
-function buildMemberContext(message, question) {
-  const brain = serverBrain.getCachedBrain();
-  if (!brain) return '';
+// ── resolveChannelMentions ────────────────────────────────────────────────────
+// Detects <#channelId> in the message, fetches actual recent messages from
+// those channels (LIVE — not from cache), and returns a formatted snippet.
+async function resolveChannelMentions(text, guild) {
+  const regex   = /<#(\d+)>/g;
+  const matches = [...text.matchAll(regex)];
+
+  // Replace <#id> with readable #channel-name in the question
+  let cleanQuestion = text.replace(/<#(\d+)>/g, (_, id) => {
+    const ch = guild.channels.cache.get(id);
+    return ch ? `#${ch.name}` : `#${id}`;
+  });
+
+  if (!matches.length) return { cleanQuestion, channelSnippet: null };
 
   const parts = [];
 
-  // ── @mentioned users in the message ──────────────────────────────────────
-  for (const [, user] of message.mentions.users) {
-    if (user.id === message.client.user.id) continue; // skip the bot itself
-    const profile = getMemberProfile(brain, user.id);
-    if (profile) parts.push(`=== @${user.username} (mentioned) ===\n${profile}`);
+  for (const match of matches) {
+    const channelId = match[1];
+    const ch = guild.channels.cache.get(channelId);
+    if (!ch || !ch.isTextBased()) continue;
+
+    try {
+      const msgs = await ch.messages.fetch({ limit: 20 });
+      if (!msgs.size) { parts.push(`#${ch.name}: (no messages found)`); continue; }
+
+      const sorted = [...msgs.values()].sort((a, b) => a.createdTimestamp - b.createdTimestamp);
+      const mostRecent = sorted[sorted.length - 1];
+
+      // Format each message as a readable line
+      const lines = sorted.map(m => {
+        const ts    = new Date(m.createdTimestamp).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const name  = m.member?.displayName || m.author.username;
+        const body  = m.content?.trim() || (m.embeds?.[0] ? `[embed: ${m.embeds[0].title || m.embeds[0].description?.slice(0, 80) || 'embed'}]` : '[attachment]');
+        return `[${ts}] ${name}: ${body.slice(0, 400)}`;
+      });
+
+      parts.push(
+        `Channel #${ch.name} — last ${lines.length} messages (oldest → newest, most recent at bottom):\n` +
+        lines.join('\n') +
+        `\n\nMOST RECENT MESSAGE: [${new Date(mostRecent.createdTimestamp).toLocaleString()}] ${mostRecent.member?.displayName || mostRecent.author.username}: ${(mostRecent.content || '[embed/attachment]').slice(0, 500)}`
+      );
+
+      // Update the channel index with this fresh content
+      brain.indexChannelContent(channelId, ch.name, sorted);
+    } catch (e) {
+      parts.push(`#${ch.name}: (could not fetch — ${e.message})`);
+    }
   }
 
-  // ── Username lookup patterns ──────────────────────────────────────────────
-  // "who is <name>", "tell me about <name>", "what do you know about <name>", etc.
+  return { cleanQuestion, channelSnippet: parts.length ? parts.join('\n\n---\n\n') : null };
+}
+
+// ── buildMemberContext ────────────────────────────────────────────────────────
+// Feeds member profiles to AI — @mentions, username lookups, top activity summary
+function buildMemberContext(message, question) {
+  const cached = brain.getCachedBrain();
+  if (!cached) return '';
+
+  const parts = [];
+
+  // @mentioned users in the message (skip the bot itself)
+  for (const [, user] of message.mentions.users) {
+    if (user.id === message.client.user.id) continue;
+    const profile = getMemberProfile(cached, user.id);
+    if (profile) parts.push(`=== @${user.username} ===\n${profile}`);
+  }
+
+  // "who is X", "tell me about X", "info on X" pattern
   const nameMatch = question.match(
-    /(?:who is|tell me about|what do you know about|info on|lookup|find|check)\s+([A-Za-z0-9_]{3,32})/i
+    /(?:who(?:'s| is)|tell me about|info (?:on|about)|look ?up|check|find)\s+([A-Za-z0-9_\-.]{2,32})/i
   );
   if (nameMatch) {
-    const found = serverBrain.getMemberByUsername(nameMatch[1]);
+    const found = brain.getMemberByUsername(nameMatch[1]);
     if (found) {
-      const profile = getMemberProfile(brain, found.id);
+      const profile = getMemberProfile(cached, found.id);
       if (profile) parts.push(`=== "${nameMatch[1]}" profile ===\n${profile}`);
     }
   }
 
-  // ── Top active members summary (background knowledge for the AI) ──────────
-  const topMembers = Object.values(brain.members || {})
+  // Top 12 active members summary
+  const top = Object.values(cached.members || {})
     .filter(m => m.messageCount > 0)
     .sort((a, b) => b.messageCount - a.messageCount)
-    .slice(0, 15);
+    .slice(0, 12);
 
-  if (topMembers.length) {
-    const summary = topMembers.map(m => {
-      const gm   = brain.guildMembers?.[m.id];
-      const role = gm?.topRole || m.topRole || 'Member';
-      const last = m.lastSeen ? new Date(m.lastSeen).toLocaleDateString() : 'unknown';
-      return `• ${m.displayName || m.username} [${role}] — ${m.messageCount} messages, last active ${last}`;
-    }).join('\n');
-    parts.push(`=== ACTIVE MEMBERS (top 15 by activity) ===\n${summary}`);
+  if (top.length) {
+    parts.push(
+      `=== MOST ACTIVE MEMBERS ===\n` +
+      top.map(m => {
+        const gm   = cached.guildMembers?.[m.id];
+        const role = gm?.topRole || m.topRole || 'Member';
+        const last = m.lastSeen ? new Date(m.lastSeen).toLocaleDateString() : '?';
+        return `• ${m.displayName || m.username} [${role}] — ${m.messageCount} msgs, last seen ${last}`;
+      }).join('\n')
+    );
   }
 
-  // ── Recent important facts (promotions, announcements) ───────────────────
-  const recentFacts = (brain.facts || [])
+  // Recent notable facts
+  const facts = (cached.facts || [])
     .filter(f => ['promotion_event', 'announcement', 'relationship'].includes(f.type))
-    .slice(-20)
+    .slice(-15)
     .map(f => {
-      if (f.type === 'promotion_event') return `• Promotion: ${f.people} — "${f.content}" (in #${f.channel})`;
+      if (f.type === 'promotion_event') return `• Promotion in #${f.channel}: ${f.people} — "${f.content.slice(0, 100)}"`;
       if (f.type === 'announcement')    return `• Announcement in #${f.channel}: "${f.content.slice(0, 120)}"`;
-      if (f.type === 'relationship')    return `• Known fact: "${f.subject}" = "${f.value}" (set by ${f.source})`;
+      if (f.type === 'relationship')    return `• Fact set by ${f.source}: "${f.subject}" = "${f.value}"`;
       return null;
-    })
-    .filter(Boolean);
+    }).filter(Boolean);
 
-  if (recentFacts.length) {
-    parts.push(`=== RECENT SERVER FACTS ===\n${recentFacts.join('\n')}`);
-  }
+  if (facts.length) parts.push(`=== RECENT FACTS ===\n${facts.join('\n')}`);
 
   return parts.join('\n\n');
 }
 
-// ── Get a human-readable profile for a Discord user ID ───────────────────────
-function getMemberProfile(brain, userId) {
-  const gm       = brain.guildMembers?.[userId];
-  const activity = brain.members?.[userId];
-  if (!gm && !activity) return null;
+// ── getMemberProfile ──────────────────────────────────────────────────────────
+function getMemberProfile(cached, userId) {
+  const gm  = cached.guildMembers?.[userId];
+  const act = cached.members?.[userId];
+  if (!gm && !act) return null;
 
   const lines = [];
   if (gm) {
     lines.push(`Username: ${gm.username} | Display: ${gm.displayName}`);
     lines.push(`Top Role: ${gm.topRole}`);
-    if (gm.roles?.length) lines.push(`Roles: ${gm.roles.slice(0, 6).join(', ')}`);
-    if (gm.joinedAt) lines.push(`Joined: ${new Date(gm.joinedAt).toLocaleDateString()}`);
+    if (gm.roles?.length) lines.push(`All Roles: ${gm.roles.slice(0, 6).join(', ')}`);
+    if (gm.joinedAt) lines.push(`Joined server: ${new Date(gm.joinedAt).toLocaleDateString()}`);
   }
-  if (activity) {
-    lines.push(`Messages tracked: ${activity.messageCount}`);
-    if (activity.lastSeen) lines.push(`Last seen: ${new Date(activity.lastSeen).toLocaleDateString()}`);
-    if (activity.channels?.length) lines.push(`Active in: ${activity.channels.slice(0, 5).join(', ')}`);
+  if (act) {
+    lines.push(`Messages tracked: ${act.messageCount}`);
+    if (act.lastSeen) lines.push(`Last active: ${new Date(act.lastSeen).toLocaleDateString()}`);
+    if (act.channels?.length) lines.push(`Active channels: ${act.channels.slice(0, 5).join(', ')}`);
   }
   return lines.join('\n');
 }
 
-function splitText(text, maxLen) {
-  const chunks = [];
-  const lines  = text.split('\n');
-  let cur = '';
-  for (const line of lines) {
-    if ((cur + '\n' + line).length > maxLen) { if (cur) chunks.push(cur); cur = line; }
-    else cur = cur ? cur + '\n' + line : line;
-  }
-  if (cur) chunks.push(cur);
-  return chunks;
-}
-
+// ── getUserHistory ────────────────────────────────────────────────────────────
 async function getUserHistory(member, guild) {
   try {
     const verifyCh = guild.channels.cache.get(config.channels.verifyDatabase);
     if (!verifyCh) return '';
 
     const { users } = await db.getVerifyDb(verifyCh);
-    const entry = users.find(u => u.discordId === member.id && u.status === 'active');
+    const entry = (users || []).find(u => u.discordId === member.id && u.status === 'active');
     if (!entry) return `${member.displayName} is not verified in the FSRP database.`;
 
     const robloxId = String(entry.robloxId);
     const gameCh   = guild.channels.cache.get(config.channels.gameDatabase);
-    if (!gameCh) return `Roblox: ${entry.robloxUsername} (${robloxId}).`;
+    if (!gameCh)   return `Roblox: ${entry.robloxUsername} (${robloxId}).`;
 
-    const files       = await db.readAllFiles(gameCh, null, 50);
+    // Limit to 25 files for speed
+    const files       = await db.readAllFiles(gameCh, null, 25);
     const appearances = [];
     for (const f of files) {
       const p = (f.data?.players || []).find(pl => String(pl.userId || pl._userId) === robloxId);
       if (p) appearances.push({
         ts:       f.data?._meta?.timestamp || new Date(f.timestamp).toISOString(),
-        team:     p.team || p._team || '?',
-        vehicle:  p.vehicle || p._vehicle || 'On foot',
+        team:     p.team     || p._team     || '?',
+        vehicle:  p.vehicle  || p._vehicle  || 'On foot',
         callsign: p.callsign || p._callsign || 'N/A',
       });
     }
 
-    if (!appearances.length) return `Roblox: ${entry.robloxUsername} (${robloxId}). No game sessions recorded yet.`;
+    if (!appearances.length) return `Roblox: ${entry.robloxUsername} (${robloxId}). No sessions recorded yet.`;
 
     const last     = appearances[appearances.length - 1];
     const teams    = [...new Set(appearances.map(a => a.team))];
@@ -194,16 +256,26 @@ async function getUserHistory(member, guild) {
     return [
       `Roblox: ${entry.robloxUsername} (${robloxId})`,
       `Verified: ${entry.verifiedAt}`,
-      `Sessions: ${appearances.length}`,
-      `Last seen: ${last.ts}`,
-      `Last team: ${last.team} | Callsign: ${last.callsign}`,
+      `Sessions seen: ${appearances.length}`,
+      `Last session: ${last.ts} | Team: ${last.team} | Callsign: ${last.callsign}`,
       `Teams played: ${teams.join(', ')}`,
-      `Vehicles used: ${vehicles.join(', ') || 'None'}`,
+      `Vehicles used: ${vehicles.join(', ') || 'none recorded'}`,
     ].join('\n');
   } catch (err) {
     console.error('[MentionHandler] getUserHistory:', err.message);
     return '';
   }
+}
+
+function splitText(text, maxLen) {
+  const chunks = [], lines = text.split('\n');
+  let cur = '';
+  for (const line of lines) {
+    if ((cur + '\n' + line).length > maxLen) { if (cur) chunks.push(cur); cur = line; }
+    else cur = cur ? cur + '\n' + line : line;
+  }
+  if (cur) chunks.push(cur);
+  return chunks;
 }
 
 module.exports = { handleMention };

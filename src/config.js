@@ -1,4 +1,5 @@
 // config.js — FSRP Management Bot Configuration
+  // Last updated: full role/channel ID audit from live server export
 
   module.exports = {
     heartbeatInterval: 20_000,
@@ -21,163 +22,232 @@
     },
 
     channels: {
-      gameDatabase:         '1488136483041710221',
-      discordDatabase:      '1488136399084458065',
-      verifyDatabase:       '1488136027704004689',
-      staffApplications:    '1487990797679857734',
-      hrCentral:            '1488138175057498142',
-      ticketResults:        '1488279812039774259',
-      logs:                 '1427862063681900637',
-      mdt:                  '1488603761520807966',
-      staffChat:            '1488332986867777606',
-      staffPromotion:       '1488279812039774259',
-      staffReview:          '1487893136687759421',
-      verification:         '1488275213379567636',
-      announcements:        '1487917734665912390',
-      sessionAnnouncements: '1488537466783797420',
-      inGameReports:        '1488200620350378154',
-      selfRoles:            '1488603443760332904',
-      shiftCards:           '1488548099055030313',
-      discordRules:         '1487889324434522152',
-      gameRules:            '1487889453027426489',
-      leoRules:             '1487889559327998073',
-      fdRules:              '1487889719189700849',
-      dotRules:             '1487889806477492406',
-      policeCodes:          '1488387226025857044',
-      // ─── New feature channels ────────────────────────────
-      // Set these to the real channel IDs in your server
-      // wantedWall: live wanted-criminals board (any visible channel)
-      // crimeTicker: auto news-feed of kills/events
-      // mapChannel: where the ERLC criminal map gets posted every 2min
-      // vouchBoard: where /vouch shoutouts get posted
-      wantedWall:   '1488603761520807966',   // ← currently using MDT; change if you have a dedicated channel
-      crimeTicker:  '1488603761520807966',   // ← same
-      mapChannel:   '1488603761520807966',   // ← same
-      vouchBoard:    '1488603443760332904',  // ← self-roles channel for now
-        scenarioBoard: '1488332986867777606',  // ← staff chat for now; create a #scenario-board channel and update
-      cityReport:   '1488332986867777606',   // ← staff chat for daily city report
+      // ── Internal databases ──────────────────────────────────
+      gameDatabase:            '1488136483041710221',
+      discordDatabase:         '1488136399084458065',
+      verifyDatabase:          '1488136027704004689',
+
+      // ── Staff channels ──────────────────────────────────────
+      logs:                    '1427862063681900637',
+      staffChat:               '1488332986867777606',
+      staffAnnouncement:       '1489778130305421484',
+      staffRules:              '1488349045096185967',
+      discordStaffRules:       '1488353641239810109',
+      staffMedia:              '1488333044250050611',
+      loaRequest:              '1488333093663408341',
+      staffPromotion:          '1490728722360303917',   // FIXED (was pointing at applications-results)
+      staffReview:             '1487893136687759421',
+      hrCentral:               '1488138175057498142',
+      shiftCards:              '1488548099055030313',
+
+      // ── Applications ────────────────────────────────────────
+      applications:            '1487990797679857734',
+      applicationResults:      '1488279812039774259',
+
+      // ── MDT / ERLC ───────────────────────────────────────────
+      mdt:                     '1488603761520807966',
+      erlcMisc:                '1488137026220982432',
+
+      // ── Moderation ──────────────────────────────────────────
+      verification:            '1488275213379567636',
+      support:                 '1487892817669001346',
+      banAppeals:              '1487892898174210150',
+
+      // ── Rules ───────────────────────────────────────────────
+      discordRules:            '1487889324434522152',
+      gameRules:               '1487889453027426489',
+      leoRules:                '1487889559327998073',
+      fdRules:                 '1487889719189700849',
+      dotRules:                '1487889806477492406',
+      policeCodes:             '1488387226025857044',
+      iaHandbook:              '1491804573394931912',
+
+      // ── Community / public ───────────────────────────────────
+      announcements:           '1487917734665912390',
+      serverAnnouncements:     '1489583595063345152',
+      sessionAnnouncements:    '1488537466783797420',
+      sneakPeeks:              '1487960481917440142',
+      selfRoles:               '1488603443760332904',
+      general:                 '1487899655219056800',
+      gameChat:                '1487899727491235902',
+      media:                   '1487899802573471774',
+      suggestions:             '1487899954008559797',
+      memes:                   '1489107100843118752',
+      welcome:                 '1488345719961288906',
+      commands:                '1488200566210560200',
+      deptUpdates:             '1488200620350378154',
+      giveaway:                '1490138847097651352',
+      supporter:               '1489835629691801611',
+      whitelistChat:           '1491926924291997920',
+      partnerships:            '1418616953878089931',
+      partnershipRequirements: '1418621107799593111',
+
+      // ── Live game feeds ─────────────────────────────────────
+      // Set to dedicated channels if created; currently all using MDT
+      wantedWall:    '1488603761520807966',
+      crimeTicker:   '1488603761520807966',
+      mapChannel:    '1488603761520807966',
+      vouchBoard:    '1488603443760332904',
+      scenarioBoard: '1488332986867777606',
+      cityReport:    '1488332986867777606',
+      inGameReports: '1488200620350378154',
     },
 
     roles: {
-      owner:            '1419691048468349109',
-      coOwner:          '1488159864692674824',
-      ownershipAssist:  '1488159949635850240',
-      ownershipTeam:    '1488160033941491772',
-      serverDirector:   '1488194100586090566',
-      deputyDirector:   '1488194152641593354',
-      directiveAdvisor: '1488194203010728097',
-      assistDirector:   '1488194263618424852',
-      communityHandler: '1488195210919018536',
-      hr:               '1488195280422568127',
-      seniorManager:    '1488195585252004106',
-      manager:          '1488195652671377498',
-      trialManagement:  '1488195724343644271',
-      staffSupervisor:  '1488195819545825512',
-      staffTrainer:     '1488195889699881085',
-      headAdmin:        '1488196031337463878',
-      seniorAdmin:      '1488196434045177946',
-      gameStaff:        '1488196516475834448',
-      trialStaff:       '1488196587313172590',
-      headModerator:    '1488197200172548250',
-      seniorMod:        '1488197391445131435',
-      moderator:        '1488197450618507344',
-      trialMod:         '1488197512144879687',
-      gameStaffGeneric: '1488502230498934935',
-      discordStaff:     '1488502325852242031',
-      discordAdmin:     '1488502325852242031',
-      discordMod:       '1488327504824631338',
-      trialDiscordMod:  '1488327697879928842',
-      verified:         '1420056125813952523',
-      unverified:       '1420031201112096769',
-      leo:              '1488726480320987348',
-      fireDept:         '1488726384011378729',
-      dot:              '1488726582985232475',
-      civilian:         '1488726710483685417',
-      ssuPing:          '1488726213592748073',
-      sessionPing:      '1488273501147103433',
-      giveawayPing:     '1424766065128378388',
-      mediaPing:        '1424766193356767334',
-      onDutyStaff:      '1488139167698260059',
-      played1Hour:      '1488139307901522170',
-      played2Hour:      '1488139407360921661',
-      staffLOA:         '1488198945405534320',
-      staffOfWeek:      '1488207883970810030',
+      // ── Ownership ────────────────────────────────────────────
+      owner:               '1419691048468349109',
+      coOwner:             '1488159864692674824',
+      ownershipAssist:     '1488159949635850240',
+      ownershipTeam:       '1488160033941491772',
+      seniorHighRank:      '1488496578590150736',
+      highRank:            '1488496646198267995',
+
+      // ── Management ───────────────────────────────────────────
+      headManagement:      '1492293432897568798',
+      seniorManagement:    '1492293511897415882',
+      trialManagement:     '1492293584366604368',
+      managementTeam:      '1491907328885260551',
+
+      // ── Directive (server leadership) ────────────────────────
+      serverDirector:      '1488194100586090566',
+      deputyDirector:      '1488194152641593354',
+      directiveAdvisor:    '1488194203010728097',
+      assistDirector:      '1488194263618424852',
+      communityHandler:    '1488195210919018536',
+
+      // ── Internal Affairs ─────────────────────────────────────
+      iaDirector:          '1488192871239520327',
+      internalAffairs:     '1488192933638180965',
+      trialIA:             '1488193005415567621',
+
+      // ── Game Staff ───────────────────────────────────────────
+      staffSupervisor:     '1488195819545825512',
+      staffTrainer:        '1488195889699881085',
+      headAdmin:           '1488196031337463878',
+      seniorAdmin:         '1488196434045177946',
+      administrator:       '1488196516475834448',
+      trialAdmin:          '1488196587313172590',
+      headModerator:       '1488197200172548250',
+      seniorMod:           '1488197391445131435',
+      moderator:           '1488197450618507344',
+      trialMod:            '1488197512144879687',
+      gameStaff:           '1488502230498934935',    // FSRP | Game Staff (generic role)
+      onDutyStaff:         '1488139167698260059',
+      staffOfWeek:         '1488207883970810030',
+      staffLOA:            '1488198945405534320',
       applicationReviewer: '1488138755947626730',
-      iaDirector:       '1488192871239520327',
-      formerStaff:      '',
-      strike1:          '',
-      strike2:          '',
-      strike3:          '',
-      mediaTeam:        '1488138471444058202',
-      leadMedia:        '1488135751983038557',
-      srMedia:          '1488136071370768385',
-      jrMedia:          '1488138660678471750',
-      contentCreator:   '1488191434128490497',
-      announcementPing: '1488273501147103433',
-      seniorHighRank:   '1488496578590150736',
-      highRank:         '1488496646198267995',
+
+      // ── Discord Staff ────────────────────────────────────────
+      discordStaff:        '1488502325852242031',
+      discordMod:          '1488327504824631338',
+      trialDiscordMod:     '1488327697879928842',
+
+      // ── Staff status ─────────────────────────────────────────
+      staffBlacklisted:    '1492698942692003870',
+      underInvestigation:  '1488193066014871672',
+      suspendedStaff:      '1492699166567301251',
+      formerStaff:         '1490350495565479986',
+      formerDiscordStaff:  '1493227293085270087',
+
+      // ── Media Team ───────────────────────────────────────────
+      leadMedia:           '1488135751983038557',
+      mediaOfWeek:         '1488135902688444528',
+      srMedia:             '1488136071370768385',
+      mediaTeam:           '1488138471444058202',
+      jrMedia:             '1488138660678471750',
+      trialMedia:          '1492639014803734699',
+      contentCreator:      '1488191434128490497',
+
+      // ── Events / Community ───────────────────────────────────
+      eventsHoster:        '1489782758275289260',
+
+      // ── Partnerships ─────────────────────────────────────────
+      partnershipMember:   '1491947630702629036',
+      partnershipHandler:  '1491947541292515452',
+      partnershipOverseer: '1492699880450166784',
+      entertainmentMgmt:   '1490516364593598638',
+
+      // ── In-game department roles ─────────────────────────────
+      leo:                 '1488726480320987348',
+      fireDept:            '1488726384011378729',
+      dot:                 '1488726582985232475',
+      swat:                '1491609375515738224',
+      civilian:            '1488726710483685417',
+      irlFD:               '1490417679012728952',
+
+      // ── Whitelist / verification ─────────────────────────────
+      whiteListed:         '1490041719574630674',
+      verified:            '1420056125813952523',
+      unverified:          '1420031201112096769',
+
+      // ── Donator / VIP ────────────────────────────────────────
+      serverBooster:       '1488191563958849617',
+      megaDonator:         '1488191623782203542',
+      donator:             '1488191664269951146',
+      serverVIP:           '1488191723598381086',
+
+      // ── Ping roles ───────────────────────────────────────────
+      announcementPing:    '1424765964993429514',
+      sessionPing:         '1488273501147103433',
+      ssuPing:             '1488726213592748073',
+      giveawayPing:        '1424766065128378388',
+      mediaPing:           '1424766193356767334',
     },
 
+    // ── Role group helpers ────────────────────────────────────
     get staffRoles() {
+      const r = this.roles;
       return [
-        this.roles.owner, this.roles.coOwner, this.roles.ownershipTeam, this.roles.ownershipAssist,
-        this.roles.serverDirector, this.roles.deputyDirector, this.roles.directiveAdvisor, this.roles.assistDirector,
-        this.roles.communityHandler, this.roles.hr, this.roles.seniorManager, this.roles.manager, this.roles.trialManagement,
-        this.roles.staffSupervisor, this.roles.staffTrainer,
-        this.roles.headAdmin, this.roles.seniorAdmin, this.roles.gameStaff, this.roles.trialStaff,
-        this.roles.headModerator, this.roles.seniorMod, this.roles.moderator, this.roles.trialMod,
-        this.roles.gameStaffGeneric,
-        this.roles.discordStaff, this.roles.discordMod, this.roles.trialDiscordMod,
+        r.owner, r.coOwner, r.ownershipTeam, r.ownershipAssist,
+        r.seniorHighRank, r.highRank,
+        r.headManagement, r.seniorManagement, r.trialManagement, r.managementTeam,
+        r.serverDirector, r.deputyDirector, r.directiveAdvisor, r.assistDirector,
+        r.communityHandler, r.iaDirector,
+        r.staffSupervisor, r.staffTrainer,
+        r.headAdmin, r.seniorAdmin, r.administrator, r.trialAdmin,
+        r.headModerator, r.seniorMod, r.moderator, r.trialMod,
+        r.gameStaff,
+        r.discordStaff, r.discordMod, r.trialDiscordMod,
       ].filter(Boolean);
     },
 
     get managementRoles() {
+      const r = this.roles;
       return [
-        this.roles.owner, this.roles.coOwner, this.roles.ownershipTeam, this.roles.ownershipAssist,
-        this.roles.serverDirector, this.roles.deputyDirector, this.roles.directiveAdvisor, this.roles.assistDirector,
-        this.roles.communityHandler, this.roles.hr,
+        r.owner, r.coOwner, r.ownershipTeam, r.ownershipAssist,
+        r.seniorHighRank, r.highRank,
+        r.headManagement, r.seniorManagement, r.trialManagement, r.managementTeam,
+        r.serverDirector, r.deputyDirector, r.directiveAdvisor, r.assistDirector,
+        r.communityHandler, r.iaDirector,
       ].filter(Boolean);
     },
 
     get hrRoles() {
+      const r = this.roles;
       return [
-        this.roles.owner, this.roles.coOwner,
-        this.roles.serverDirector, this.roles.deputyDirector,
-        this.roles.hr, this.roles.communityHandler,
+        r.owner, r.coOwner,
+        r.headManagement, r.seniorManagement,
+        r.serverDirector, r.deputyDirector,
+        r.communityHandler,
       ].filter(Boolean);
     },
 
-    // ERLC Florida State coordinate bounds (game world studs)
-    // Used by mapPinner to convert LocationX/LocationZ → image pixels
-    mapCoords: {
-      minX: -3500,
-      maxX:  3500,
-      minZ: -3500,
-      maxZ:  3500,
-    },
-
-    // URL of the ERLC Florida State top-down map image
-    // Replace with a direct PNG link to your preferred map image
-    // The bot will download, cache, and overlay red dots on it
-    // Set this to a direct PNG/JPG link to your ERLC Florida State map image.
-    // Leave empty (\'\') to auto-generate a clean schematic map (works without any external URL).
-    mapImageUrl: '',
-
-    // MDT emergency call ping map — keyed by ERLC team string
+    // ── MDT emergency ping map ────────────────────────────────
     mdtPings: {
       'Police':  ['1488726480320987348'],
       'Fire':    ['1488726384011378729'],
       'EMS':     ['1488726384011378729'],
       'DOT':     ['1488726582985232475'],
       'Sheriff': ['1488726480320987348'],
-      'SWAT':    ['1488726480320987348', '1488726213592748073'],
+      'SWAT':    ['1488726480320987348', '1491609375515738224', '1488726213592748073'],
     },
 
+    // ── Application system ────────────────────────────────────
     approvalRoles: {
-      gamestaff: 'trialStaff',
+      gamestaff: 'trialAdmin',
       mod:       'trialDiscordMod',
-      media:     'mediaTeam',
-      whitelist: 'verified',
+      media:     'trialMedia',
+      whitelist: 'whiteListed',
     },
 
     applicationCategories: [
@@ -257,5 +327,9 @@
         { id: 'q15', label: 'Type "I AGREE" to confirm all your answers are truthful and your own.' },
       ],
     },
+
+    // ERLC map coordinate bounds
+    mapCoords: { minX: -3500, maxX: 3500, minZ: -3500, maxZ: 3500 },
+    mapImageUrl: '',
   };
   

@@ -95,7 +95,8 @@ async function handleCategorySelect(interaction) {
   try {
     const safeName = `app-${categoryId}-${member.user.username}`.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
     const everyoneRole = guild.roles.everyone;
-    const hrRoleId     = config.roles.hr;
+    // hr role replaced with hrRoles array (config.roles.hr removed)
+  const hrRoleId = config.hrRoles; // array of management/hr role IDs
     const botId        = guild.client.user.id;
 
     const overwrites = [

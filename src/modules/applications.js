@@ -93,10 +93,9 @@ async function handleCategorySelect(interaction) {
 
   let appCh;
   try {
-    const safeName = `app-${categoryId}-${member.user.username}`.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
+    const safeName     = `app-${categoryId}-${member.user.username}`.toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 45);
     const everyoneRole = guild.roles.everyone;
-    // hr role replaced with hrRoles array (config.roles.hr removed)
-  const hrRoleId = config.hrRoles; // array of management/hr role IDs
+    const hrRoleIds    = config.hrRoles; // array of management/hr role IDs
     const botId        = guild.client.user.id;
 
     const overwrites = [
@@ -104,10 +103,20 @@ async function handleCategorySelect(interaction) {
       { id: member.id,       type: OverwriteType.Member, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] },
       { id: botId,           type: OverwriteType.Member, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageMessages] },
     ];
-    if (hrRoleId) overwrites.push({ id: hrRoleId, type: OverwriteType.Role, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
 
-    // Try to put it in same category as staff-applications channel
-    const parentCh = guild.channels.cache.get(config.channels.staffApplications);
+    // Add one overwrite entry per HR role ID
+    if (Array.isArray(hrRoleIds)) {
+      for (const roleId of hrRoleIds) {
+        if (roleId) {
+          overwrites.push({ id: roleId, type: OverwriteType.Role, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
+        }
+      }
+    } else if (hrRoleIds) {
+      overwrites.push({ id: hrRoleIds, type: OverwriteType.Role, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory] });
+    }
+
+    // Use config.channels.applications (the correct key) to find the parent category
+    const parentCh = guild.channels.cache.get(config.channels.applications);
     const parentId  = parentCh?.parentId || null;
 
     appCh = await guild.channels.create({
@@ -146,20 +155,12 @@ async function handleCategorySelect(interaction) {
       .setAuthor({ name: '📋  FSRP APPLICATIONS  —  Florida State Roleplay' })
       .setTitle(`${category.emoji}  Application Started — ${category.label}`)
       .setDescription(
-        `Welcome to the **${category.label}** application process!
-
-` +
-        `> Head to ${appCh} to get started.
-` +
-        `> Answer each question honestly and in full sentences.
-` +
-        `> Take your time — there is no rush.
-
-` +
+        `Welcome to the **${category.label}** application process!\n\n` +
+        `> Head to ${appCh} to get started.\n` +
+        `> Answer each question honestly and in full sentences.\n` +
+        `> Take your time — there is no rush.\n\n` +
         `**Good luck! We are excited to review your application.**`
       )
-      .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
-      .setTimestamp()
       .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
       .setTimestamp()
     ]});
@@ -218,22 +219,13 @@ async function finalizeApplication(channel, appData, client) {
     .setAuthor({ name: '✅  APPLICATION SUBMITTED  —  FSRP' })
     .setTitle(`${category?.emoji || '📋'}  ${category?.label} Application — Submitted`)
     .setDescription(
-      `> Your application has been received and is now under review.
-
-` +
-      `**What happens next:**
-` +
-      `> 1. HR will review your answers within **24–48 hours**
-` +
-      `> 2. You will be notified here **and** via DM
-` +
-      `> 3. Please be patient — do not DM HR staff directly
-
-` +
+      `> Your application has been received and is now under review.\n\n` +
+      `**What happens next:**\n` +
+      `> 1. HR will review your answers within **24–48 hours**\n` +
+      `> 2. You will be notified here **and** via DM\n` +
+      `> 3. Please be patient — do not DM HR staff directly\n\n` +
       `Thank you for applying to **Florida State Roleplay**. We appreciate your interest!`
     )
-    .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
-    .setTimestamp()
     .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
     .setTimestamp()
   ]});
@@ -245,20 +237,12 @@ async function finalizeApplication(channel, appData, client) {
         .setAuthor({ name: '📬  APPLICATION SUBMITTED  —  FSRP' })
         .setTitle(`Your ${category?.label} Application is In!`)
         .setDescription(
-          `**Congratulations on completing your application!** 🎉
-
-` +
-          `> HR will review within **24–48 hours**
-` +
-          `> Watch this DM and your application channel for updates
-` +
-          `> Do **not** DM HR staff — they will reach out to you
-
-` +
+          `**Congratulations on completing your application!** 🎉\n\n` +
+          `> HR will review within **24–48 hours**\n` +
+          `> Watch this DM and your application channel for updates\n` +
+          `> Do **not** DM HR staff — they will reach out to you\n\n` +
           `We appreciate your interest in Florida State Roleplay. Fingers crossed! 🤞`
         )
-        .setFooter({ text: 'FSRP Applications — Florida State Roleplay' })
-        .setTimestamp()
         .setFooter({ text: 'FSRP Management — Florida State Roleplay' })
         .setTimestamp()
       ]});
@@ -431,7 +415,7 @@ async function processDecision(interaction, channelId, appData, decision, notes)
   }
 
   // ── Public result embed (matches screenshot style) ───────
-  const resultsCh = guild.channels.cache.get(config.channels.ticketResults);
+  const resultsCh = guild.channels.cache.get(config.channels.applicationResults);
   if (resultsCh && !onHold) {
     const acceptedImage = process.env.ACCEPTED_IMAGE_URL || null;
     const deniedImage   = process.env.DENIED_IMAGE_URL   || null;
@@ -448,9 +432,9 @@ async function processDecision(interaction, channelId, appData, decision, notes)
       .setFooter({ text: `Reviewed on: ${reviewedOn} • Reviewed by: ${reviewer.username}` })
       .setTimestamp();
 
-    if (notes)                              pubEmbed.addFields({ name: 'Notes', value: notes, inline: false });
-    if (approved && acceptedImage)         pubEmbed.setImage(acceptedImage);
-    if (!approved && deniedImage)          pubEmbed.setImage(deniedImage);
+    if (notes)                      pubEmbed.addFields({ name: 'Notes', value: notes, inline: false });
+    if (approved && acceptedImage)  pubEmbed.setImage(acceptedImage);
+    if (!approved && deniedImage)   pubEmbed.setImage(deniedImage);
 
     // Content = user mention (outside embed, shows above it like in the screenshot)
     await resultsCh.send({ content: `<@${appData.discordId}>`, embeds: [pubEmbed] }).catch(e => console.error('[Apps] Results post:', e.message));

@@ -38,42 +38,38 @@
       const msgs = await channel.messages.fetch({ limit: 20 });
       if ([...msgs.values()].some(m =>
         m.author.id === channel.client.user.id &&
-        m.components?.some(r => r.components?.some(c => c.customId === 'apply_button'))
+        m.components?.some(r => r.components?.some(c => c.customId?.startsWith('app_category:')))
       )) return;
     } catch {}
 
-    const catList = config.applicationCategories
-      .map(c => `◆  **${c.label}** — ${c.description}`)
-      .join('\n');
-
     const embed = new EmbedBuilder()
-      .setColor(C.ink)
-      .setAuthor({ name: 'Florida State Roleplay  ·  Recruitment', iconURL: channel.guild.iconURL() || undefined })
-      .setTitle('Open Positions')
+      .setColor(0x1F6FEB)
+      .setAuthor({ name: 'Florida State Roleplay  ·  Human Resources', iconURL: channel.guild.iconURL() || undefined })
+      .setTitle('Staff Recruitment — Open Positions')
+      .setThumbnail(channel.guild.iconURL() || null)
       .setDescription(
-        '> Applications are reviewed by the Directive Team within **24–48 hours**.\n' +
-        '> Ensure your Roblox account is verified before proceeding.\n\n' +
-        '**Available Divisions**\n' +
-        catList + '\n\n' +
-        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-        '-# All submissions are reviewed confidentially. Misrepresentation will result in permanent disqualification.'
+        'Select a division below to begin your application. Applications are assessed by the Directive Team within 24–48 hours. ' +
+        'Your Roblox account must be verified before submitting.'
       )
       .addFields(
-        { name: 'Process',       value: '**1.** Select your division  ·  **2.** Answer the questionnaire  ·  **3.** Await HR review', inline: false },
-        { name: 'Requirements',  value: 'Verified Roblox account  ·  No active disciplinary record  ·  Consistent activity', inline: false },
+        { name: 'Requirements',   value: 'Verified Roblox account  ·  No active disciplinary record  ·  Consistent server activity', inline: false },
+        { name: 'Process',        value: 'Select division  →  Complete questionnaire  →  Await HR review  →  Decision via DM & results channel', inline: false },
       )
-      .setFooter({ text: 'Florida State Roleplay  ·  Human Resources' })
+      .setFooter({ text: 'Florida State Roleplay  ·  Human Resources  ·  Applications close without notice' })
       .setTimestamp();
 
-    await channel.send({
-      embeds:     [embed],
-      components: [new ActionRowBuilder().addComponents(
-        new ButtonBuilder()
-          .setCustomId('apply_button')
-          .setLabel('Begin Application')
-          .setStyle(ButtonStyle.Primary)
-      )],
-    });
+    const cats = config.applicationCategories || [];
+    const buttons = cats.map(c =>
+      new ButtonBuilder()
+        .setCustomId(`app_category:${c.id}`)
+        .setLabel(c.label)
+        .setStyle(ButtonStyle.Secondary)
+    );
+    const rows = [];
+    for (let i = 0; i < buttons.length; i += 5)
+      rows.push(new ActionRowBuilder().addComponents(buttons.slice(i, i + 5)));
+
+    await channel.send({ embeds: [embed], components: rows });
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
@@ -318,19 +314,20 @@
 
     // Main HR embed with action buttons
     const hrEmbed = new EmbedBuilder()
-      .setColor(C.gold)
-      .setAuthor({ name: `${category?.label} Application  ·  Pending Review`, iconURL: guild.iconURL() || undefined })
-      .setTitle('New Application Submission')
+      .setColor(0x1A1A2E)
+      .setAuthor({ name: `${category?.label || 'Staff'} Application  —  Pending Directive Review`, iconURL: guild.iconURL() || undefined })
+      .setTitle('New Application Received')
+      .setThumbnail(guild.members.cache.get(appData.discordId)?.displayAvatarURL() || guild.iconURL() || null)
       .addFields(
-        { name: 'Applicant',   value: `<@${appData.discordId}>`,                              inline: true },
-        { name: 'Division',    value: `${category?.emoji || ''}  ${category?.label || '—'}`, inline: true },
-        { name: 'Channel',     value: channel.toString(),                                        inline: true },
-        { name: 'Submitted',   value: `<t:${Math.floor(Date.now()/1000)}:F>`,                 inline: true },
-        { name: 'Ref ID',      value: `\`${channel.id}\``,                                inline: true },
-        { name: 'Server',      value: guild.name,                                                inline: true },
-        { name: 'AI Assessment', value: aiAnalysis.slice(0, 1024), inline: false },
+        { name: 'Applicant',   value: `<@${appData.discordId}>`,        inline: true },
+        { name: 'Division',    value: `${category?.label || '—'}`,     inline: true },
+        { name: 'Submitted',   value: `<t:${Math.floor(Date.now()/1000)}:R>`, inline: true },
+        { name: 'App Channel', value: channel.toString(),                  inline: true },
+        { name: 'Reference',   value: `\`${channel.id}\``,          inline: true },
+        { name: 'Server',      value: guild.name,                          inline: true },
+        { name: 'AI Assessment', value: aiAnalysis.slice(0, 1024),        inline: false },
       )
-      .setFooter({ text: 'Florida State Roleplay  ·  Human Resources  ·  Directive Review Required' })
+      .setFooter({ text: 'Florida State Roleplay  ·  HR System  ·  Action Required' })
       .setTimestamp();
 
     const btnRow = new ActionRowBuilder().addComponents(

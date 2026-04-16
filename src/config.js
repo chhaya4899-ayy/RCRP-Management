@@ -337,6 +337,16 @@
 
       // Maps each application category ID → the specific channel in the staff server
       // where HR review embeds (with Approve/Deny buttons) are posted.
+      // Staff server roles that are allowed to approve/deny/hold applications.
+      // Add/remove role IDs here as your staff server structure changes.
+      staffServerReviewerRoles: [
+        '1493257946896007349',   // FSRP | Ownership
+        '1493939601801347072',   // FSRP | Directive
+        '1493939238058725577',   // FSRP | IA Key
+        '1493939091384045648',   // FSRP | HR Key
+        '1493938451177799680',   // FSRP | Application Review Key
+      ],
+
       staffAppChannels: {
         gamestaff: '1493264146744213544',   // #game-staff-apps
         mod:       '1493264187865174118',   // #discord-staff-apps

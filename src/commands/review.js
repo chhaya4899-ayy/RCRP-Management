@@ -226,8 +226,8 @@ async function handlePanel(interaction) {
 }
 
 // ── Review panel button handler (called from interactionCreate) ────────────
-async function handleReviewPanelButton(interaction) {
-  const action = interaction.customId.split(':')[1];
+async function handleReviewPanelButton(interaction, forceAction) {
+  const action = forceAction || interaction.customId.split(':')[1];
 
   if (action === 'submit') {
     const modal = new ModalBuilder()

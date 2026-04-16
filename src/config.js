@@ -331,5 +331,17 @@
     // ERLC map coordinate bounds
     mapCoords: { minX: -3500, maxX: 3500, minZ: -3500, maxZ: 3500 },
     mapImageUrl: '',
-  };
+
+      // ── Staff Server (private HR server) ────────────────────────────────────
+      staffGuildId: '1493047504533459066',
+
+      // Maps each application category ID → the specific channel in the staff server
+      // where HR review embeds (with Approve/Deny buttons) are posted.
+      staffAppChannels: {
+        gamestaff: '1493264146744213544',   // #game-staff-apps
+        mod:       '1493264187865174118',   // #discord-staff-apps
+        media:     '1493264379934806209',   // #media-team-apps
+        whitelist: '1493264222178644131',   // #whitelist-apps
+      },
+    };
   

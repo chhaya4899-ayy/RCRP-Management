@@ -253,7 +253,11 @@ async function finalizeApplication(channel, appData, client) {
   let aiAnalysis = 'AI analysis unavailable.';
   try { aiAnalysis = await ai.analyzeApplication(appData.category, appData.answers, questions); } catch {}
 
-  const hrCh = guild.channels.cache.get(config.channels.hrCentral);
+  // Route to staff server's specific channel, fallback to hrCentral in main guild
+  const staffGuild  = client.guilds.cache.get(config.staffGuildId);
+  const staffChId   = config.staffAppChannels?.[appData.category];
+  const hrCh        = (staffGuild && staffChId && staffGuild.channels.cache.get(staffChId))
+                      || guild.channels.cache.get(config.channels.hrCentral);
 
   // Send answers to HR in chunks
   for (let i = 0; i < questions.length; i += 5) {
@@ -351,9 +355,11 @@ async function handleDenyModal(interaction) {
 
 // ── Shared decision processor ──────────────────────────────
 async function processDecision(interaction, channelId, appData, decision, notes) {
-  const guild    = interaction.guild;
-  const appCh    = guild.channels.cache.get(channelId);
-  const member   = guild.members.cache.get(appData.discordId);
+  // staffGuild = where HR buttons live (staff server); mainGuild = main public server
+  const staffGuild = interaction.guild;
+  const mainGuild  = interaction.client.guilds.cache.get(process.env.GUILD_ID) || interaction.guild;
+  const appCh    = mainGuild.channels.cache.get(channelId);
+  const member   = mainGuild.members.cache.get(appData.discordId);
   const category = config.applicationCategories.find(c => c.id === appData.category);
   const reviewer = interaction.user;
 
@@ -392,7 +398,7 @@ async function processDecision(interaction, channelId, appData, decision, notes)
     try {
       const dmEmbed = new EmbedBuilder()
         .setColor(approved ? config.colors.success : onHold ? config.colors.warning : config.colors.danger)
-        .setTitle(approved ? 'Staff Application Accepted — FSRP' : onHold ? 'Application On Hold — FSRP' : 'Staff Application Denied — FSRP')
+        .setTitle(approved ? `${category?.label} Application Accepted — FSRP` : onHold ? `${category?.label} Application On Hold — FSRP` : `${category?.label} Application Denied — FSRP`)
         .setDescription(
           approved
           ? `🎉 **Your ${category?.label} application was APPROVED!**\n\n` +
@@ -415,7 +421,7 @@ async function processDecision(interaction, channelId, appData, decision, notes)
   }
 
   // ── Public result embed (matches screenshot style) ───────
-  const resultsCh = guild.channels.cache.get(config.channels.applicationResults);
+  const resultsCh = mainGuild.channels.cache.get(config.channels.applicationResults);
   if (resultsCh && !onHold) {
     const acceptedImage = process.env.ACCEPTED_IMAGE_URL || null;
     const deniedImage   = process.env.DENIED_IMAGE_URL   || null;
@@ -423,11 +429,11 @@ async function processDecision(interaction, channelId, appData, decision, notes)
     const pubEmbed = new EmbedBuilder()
       .setColor(approved ? config.colors.success : config.colors.danger)
       .setAuthor({ name: guild.name, iconURL: guild.iconURL() || undefined })
-      .setTitle(approved ? 'Staff Application Accepted' : 'Staff Application Denied')
+      .setTitle(approved ? `${category?.label} Application Accepted` : `${category?.label} Application Denied`)
       .setDescription(
         approved
-          ? `Your Staff application has undergone review by the Directive Team. We are pleased to inform you that your application meets our standards, and you have successfully passed. Congratulations on this achievement!`
-          : `Your Staff application has undergone review by the Directive Team. Unfortunately, your application did not meet our standards, and it has been denied.`
+          ? `Your **${category?.label}** application has undergone review by the Directive Team. We are pleased to inform you that your application meets our standards, and you have successfully passed. Congratulations on this achievement!`
+          : `Your **${category?.label}** application has undergone review by the Directive Team. Unfortunately, your application did not meet our standards, and it has been denied.`
       )
       .setFooter({ text: `Reviewed on: ${reviewedOn} • Reviewed by: ${reviewer.username}` })
       .setTimestamp();
@@ -445,7 +451,9 @@ async function processDecision(interaction, channelId, appData, decision, notes)
     activeApps.delete(channelId);
     // Remove buttons from all HR messages in HR channel
     try {
-      const hrCh   = guild.channels.cache.get(config.channels.hrCentral);
+      const staffChId = config.staffAppChannels?.[appData.category];
+      const hrCh   = (staffGuild && staffChId && staffGuild.channels.cache.get(staffChId))
+                     || mainGuild.channels.cache.get(config.channels.hrCentral);
       const hrMsgs = hrCh ? await hrCh.messages.fetch({ limit: 50 }) : null;
       if (hrMsgs) {
         for (const m of hrMsgs.values()) {
@@ -468,26 +476,34 @@ async function processDecision(interaction, channelId, appData, decision, notes)
 }
 
 // ── Restore on restart ────────────────────────────────────
-async function restoreActiveApps(guild) {
+async function restoreActiveApps(guild, client) {
   try {
-    const hrCh = guild.channels.cache.get(config.channels.hrCentral);
-    if (!hrCh) return;
-    const msgs = await hrCh.messages.fetch({ limit: 50 });
-    for (const msg of msgs.values()) {
-      for (const row of (msg.components || [])) {
-        for (const comp of row.components) {
-          if (comp.customId?.startsWith('app_approve:')) {
-            const chId = comp.customId.split(':')[1];
-            if (activeApps.has(chId)) continue;
-            const appCh = guild.channels.cache.get(chId);
-            if (!appCh) continue;
-            const catMatch = config.applicationCategories.find(c => appCh.name.includes(c.id));
-            if (!catMatch) continue;
-            const ow = appCh.permissionOverwrites.cache.find(o => o.type === 1 && o.id !== guild.client.user.id);
-            if (!ow) continue;
-            const rebuilt = await rebuildAnswers(appCh, catMatch.id);
-            activeApps.set(chId, { discordId: ow.id, category: catMatch.id, channelId: chId, answers: rebuilt.answers, step: rebuilt.step, startedAt: msg.createdAt.toISOString() });
-            console.log(`[Applications] Restored: ${appCh.name}`);
+    // Collect all channels to scan: staff server app-specific channels + hrCentral fallback
+    const staffGuild   = client?.guilds.cache.get(config.staffGuildId);
+    const staffChIds   = Object.values(config.staffAppChannels || {});
+    const staffChs     = staffGuild ? staffChIds.map(id => staffGuild.channels.cache.get(id)).filter(Boolean) : [];
+    const fallbackCh   = guild.channels.cache.get(config.channels.hrCentral);
+    const searchChs    = staffChs.length ? staffChs : [fallbackCh].filter(Boolean);
+
+    for (const hrCh of searchChs) {
+      const msgs = await hrCh.messages.fetch({ limit: 50 }).catch(() => null);
+      if (!msgs) continue;
+      for (const msg of msgs.values()) {
+        for (const row of (msg.components || [])) {
+          for (const comp of row.components) {
+            if (comp.customId?.startsWith('app_approve:')) {
+              const chId = comp.customId.split(':')[1];
+              if (activeApps.has(chId)) continue;
+              const appCh = guild.channels.cache.get(chId); // app channels live in main guild
+              if (!appCh) continue;
+              const catMatch = config.applicationCategories.find(c => appCh.name.includes(c.id));
+              if (!catMatch) continue;
+              const ow = appCh.permissionOverwrites.cache.find(o => o.type === 1 && o.id !== guild.client.user.id);
+              if (!ow) continue;
+              const rebuilt = await rebuildAnswers(appCh, catMatch.id);
+              activeApps.set(chId, { discordId: ow.id, category: catMatch.id, channelId: chId, answers: rebuilt.answers, step: rebuilt.step, startedAt: msg.createdAt.toISOString() });
+              console.log(`[Applications] Restored: ${appCh.name}`);
+            }
           }
         }
       }

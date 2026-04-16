@@ -7,36 +7,41 @@ const db     = require('../utils/discordDb');
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
 
 async function postVerifyPanel(channel) {
-  try {
-    const msgs = await channel.messages.fetch({ limit: 20 });
-    if ([...msgs.values()].some(m => m.author.id === channel.client.user.id && m.components?.length && m.components[0]?.components?.some(c => c.customId === 'verify_button'))) return;
-  } catch {}
+    try {
+      const msgs = await channel.messages.fetch({ limit: 20 });
+      if ([...msgs.values()].some(m => m.author.id === channel.client.user.id && m.components?.length && m.components[0]?.components?.some(c => c.customId === 'verify_button'))) return;
+    } catch {}
 
-  const embed = new EmbedBuilder()
-    .setColor(0x1D6FA5)
-    .setAuthor({ name: '\uD83D\uDD10  FSRP VERIFICATION  \u2014  Florida State Roleplay' })
-    .setTitle('Verify Your Roblox Account')
-    .setDescription(
-      '> Link your Roblox account to gain **full access** to Florida State Roleplay.\n\n' +
-      '**How to verify:**\n' +
-      '> 1. Click **Verify** below\n' +
-      '> 2. Enter your **Roblox username** or **User ID**\n' +
-      '> 3. Your **Verified** role is granted instantly\n\n' +
-      '**Finding your User ID:**\n' +
-      '> Look at your Roblox profile URL:\n' +
-      '> `roblox.com/users/`**`12345678`**`/profile`\n\n' +
-      '_Having trouble? Open a ticket or contact staff._'
-    )
-    .setFooter({ text: 'FSRP Verification System \u2014 Florida State Roleplay' })
-    .setTimestamp();
+    const embed = new EmbedBuilder()
+      .setColor(0x0D1117)
+      .setAuthor({ name: 'Florida State Roleplay  ·  Account Verification', iconURL: channel.guild.iconURL() || undefined })
+      .setTitle('Roblox Account Verification')
+      .setDescription(
+        '> Linking your Roblox account unlocks full server access including department channels, session pings, and the ability to apply for staff positions.\n\n' +
+        '**Verification Process**\n' +
+        '**1.**  Press the button below to begin\n' +
+        '**2.**  Enter your Roblox username when prompted\n' +
+        '**3.**  Complete the in-game verification step as instructed\n' +
+        '**4.**  Your roles will be assigned automatically upon confirmation\n\n' +
+        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+        '-# Attempting to verify with an account that does not belong to you is a sanctionable offence.'
+      )
+      .addFields(
+        { name: 'Already Verified?', value: 'If your roles were not assigned after verification, open a support ticket in <#' + (config.channels?.support || '') + '>.', inline: false },
+      )
+      .setFooter({ text: 'Florida State Roleplay  ·  Powered by Bloxlink' })
+      .setTimestamp();
 
-  await channel.send({
-    embeds: [embed],
-    components: [new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId('verify_button').setLabel('\uD83D\uDD10 Verify My Account').setStyle(ButtonStyle.Primary)
-    )]
-  });
-}
+    await channel.send({
+      embeds: [embed],
+      components: [new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId('verify_button')
+          .setLabel('Verify Account')
+          .setStyle(ButtonStyle.Primary)
+      )],
+    });
+  }
 
 async function handleVerifyButton(interaction) {
   const verifiedRoleId = config.roles.verified;

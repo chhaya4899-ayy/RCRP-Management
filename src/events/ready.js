@@ -67,7 +67,7 @@
       await autoSetup.run(client, guild);
 
       // ── Restore in-progress applications from DB ──────────────────────────
-      await applications.restoreActiveApps(guild).catch(e => console.warn('[Ready] App restore:', e.message));
+      await applications.restoreActiveApps(guild, client).catch(e => console.warn('[Ready] App restore:', e.message));
 
       // ── Init shift cards ───────────────────────────────────────────────────
       await shiftCards.init(client).catch(e => console.warn('[Ready] ShiftCards:', e.message));

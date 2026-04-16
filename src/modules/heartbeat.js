@@ -18,6 +18,7 @@ const sessionStore      = require('./sessionStore');
 const pursuitTracker    = require('./pursuitTracker');
 const staffAlerts       = require('./staffAlertSystem');
 const serverBroadcast   = require('./serverBroadcast');
+  const statsChannels    = require('./statsChannels');
 const activeShifts    = sessionStore.getActiveShifts();
 const postedModCalls  = new Set();   // dedup keys for mod calls
 const postedEmergency = new Set();   // dedup keys for 911 calls
@@ -59,6 +60,7 @@ function start(discordClient) {
   pursuitTracker.init(discordClient);
   staffAlerts.init(discordClient);
   serverBroadcast.init(discordClient);
+  statsChannels.init(discordClient);
   console.log('[Heartbeat] Started — polling every 20s, DB save every 2min.');
   setInterval(pulse, config.heartbeatInterval);
   pulse();
@@ -106,6 +108,7 @@ async function pulse() {
     }
 
     dailyReport.track(snapshot);
+    statsChannels.pulse(snapshot).catch(e => console.error('[Heartbeat] StatsChannels:', e.message));
 
     // If server is offline/empty, run shift card updates and wanted wall but skip MDT pings
     await Promise.allSettled([

@@ -301,7 +301,17 @@ async function finalizeApplication(channel, appData, client) {
 // Deny → shows modal for notes first. Approve/Hold → immediate.
 async function handleHRDecision(interaction, decision) {
   const { isStaff } = require('../utils/permissions');
-  if (!isStaff(interaction.member)) {
+  const { PermissionFlagsBits } = require('discord.js');
+  // Cross-guild permission check: staff server has different role IDs from the main server.
+  // If the interaction is from the staff server, check for Administrator or a reviewer role.
+  // Otherwise fall back to the standard isStaff check (main server roles).
+  const isStaffServer = interaction.guildId === config.staffGuildId;
+  const reviewerRoles = config.staffServerReviewerRoles || [];
+  const hasReviewPerm = isStaffServer
+    ? (interaction.member.permissions.has(PermissionFlagsBits.Administrator) ||
+       reviewerRoles.some(id => interaction.member.roles.cache.has(id)))
+    : isStaff(interaction.member);
+  if (!hasReviewPerm) {
     return interaction.reply({ content: 'You do not have permission to make HR decisions.', ephemeral: true });
   }
 
@@ -339,7 +349,14 @@ async function handleHRDecision(interaction, decision) {
 // ── Denial modal submit ────────────────────────────────────
 async function handleDenyModal(interaction) {
   const { isStaff } = require('../utils/permissions');
-  if (!isStaff(interaction.member)) {
+  const { PermissionFlagsBits } = require('discord.js');
+  const isStaffServer2 = interaction.guildId === config.staffGuildId;
+  const reviewerRoles2 = config.staffServerReviewerRoles || [];
+  const hasReviewPerm2 = isStaffServer2
+    ? (interaction.member.permissions.has(PermissionFlagsBits.Administrator) ||
+       reviewerRoles2.some(id => interaction.member.roles.cache.has(id)))
+    : isStaff(interaction.member);
+  if (!hasReviewPerm2) {
     return interaction.reply({ content: 'You do not have permission.', ephemeral: true });
   }
   await interaction.deferReply({ ephemeral: true });

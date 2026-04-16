@@ -9,25 +9,26 @@ const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder
 async function postVerifyPanel(channel) {
     try {
       const msgs = await channel.messages.fetch({ limit: 20 });
-      if ([...msgs.values()].some(m => m.author.id === channel.client.user.id && m.components?.length && m.components[0]?.components?.some(c => c.customId === 'verify_button'))) return;
+      if ([...msgs.values()].some(m =>
+        m.author.id === channel.client.user.id &&
+        m.components?.some(r => r.components?.some(c => c.customId === 'verify_button'))
+      )) return;
     } catch {}
 
     const embed = new EmbedBuilder()
-      .setColor(0x0D1117)
+      .setColor(0x5865F2)
       .setAuthor({ name: 'Florida State Roleplay  ·  Account Verification', iconURL: channel.guild.iconURL() || undefined })
-      .setTitle('Roblox Account Verification')
+      .setTitle('Account Linkage Required')
+      .setThumbnail(channel.guild.iconURL() || null)
       .setDescription(
-        '> Linking your Roblox account unlocks full server access including department channels, session pings, and the ability to apply for staff positions.\n\n' +
-        '**Verification Process**\n' +
-        '**1.**  Press the button below to begin\n' +
-        '**2.**  Enter your Roblox username when prompted\n' +
-        '**3.**  Complete the in-game verification step as instructed\n' +
-        '**4.**  Your roles will be assigned automatically upon confirmation\n\n' +
-        '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-        '-# Attempting to verify with an account that does not belong to you is a sanctionable offence.'
+        'To access division channels, session servers, and staff applications, your Roblox account must be linked to your Discord account. ' +
+        'The process takes under 60 seconds.'
       )
       .addFields(
-        { name: 'Already Verified?', value: 'If your roles were not assigned after verification, open a support ticket in <#' + (config.channels?.support || '') + '>.', inline: false },
+        { name: 'Step 1', value: 'Press **Link Roblox Account** below', inline: true },
+        { name: 'Step 2', value: 'Enter your exact Roblox username', inline: true },
+        { name: 'Step 3', value: 'Complete the in-game prompt', inline: true },
+        { name: 'Already Verified?', value: 'If your roles were not assigned, open a support ticket in <#' + (config.channels && config.channels.support ? config.channels.support : '') + '>.', inline: false },
       )
       .setFooter({ text: 'Florida State Roleplay  ·  Powered by Bloxlink' })
       .setTimestamp();
@@ -37,7 +38,7 @@ async function postVerifyPanel(channel) {
       components: [new ActionRowBuilder().addComponents(
         new ButtonBuilder()
           .setCustomId('verify_button')
-          .setLabel('Verify Account')
+          .setLabel('Link Roblox Account')
           .setStyle(ButtonStyle.Primary)
       )],
     });

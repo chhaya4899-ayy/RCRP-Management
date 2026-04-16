@@ -27,6 +27,12 @@ async function deployCommands() {
   try {
     console.log(`[Deploy] Registering ${commands.length} slash commands...`);
 
+    // Wipe global commands — these are ghost commands cross-registered when
+    // a bot token is shared with another bot. Runs every startup to stay clean.
+    await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: [] });
+    console.log('[Deploy] 🧹 Cleared all global (application-wide) commands.');
+
+    // Register fresh guild-scoped commands only
     await rest.put(
       Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.GUILD_ID),
       { body: commands }

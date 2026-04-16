@@ -83,7 +83,7 @@ module.exports = {
       if (id.startsWith('review_panel:')) return review.handleReviewPanelButton(interaction);
 
       // Legacy review button (backward compat)
-      if (id === 'leave_review') return review.handleReviewPanelButton({ ...interaction, customId: 'review_panel:submit' });
+      if (id === 'leave_review') return review.handleReviewPanelButton(interaction, 'submit');
 
       return;
     }

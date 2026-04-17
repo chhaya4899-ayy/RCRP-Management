@@ -42,7 +42,7 @@ function init(discordClient) {
   if (_running) return;
   _running = true;
   _client  = discordClient;
-  console.log('[Brain] Initializing — first scan in 12s, then every 2 min.');
+  console.log('[Brain] Initializing — first scan in 12s, then every 40s.');
 
   setTimeout(async () => {
     await scan();
@@ -50,7 +50,7 @@ function init(discordClient) {
     _deepHistoricalScan().catch(e => console.error('[Brain] deepScan crashed:', e.message));
   }, 12_000);
 
-  setInterval(() => scan(), config.snapshotInterval);
+  setInterval(() => scan(), 40_000); // scan every 40 s
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
